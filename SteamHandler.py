@@ -31,7 +31,7 @@ class Steam:
         auth_url = steam_openid_url + "?" + query_string
         return(auth_url)
 
-    # API Calls
+    # User API Calls
     def get_user_steamid(self, username):
         # Implement caching for this method if needed
         pass
@@ -104,15 +104,6 @@ class Steam:
         response = requests.get(f"http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key={self.STEAM_KEY}&steamid={steamid}&count={count}&format=json")
         return response.json()["friendslist"]
 
-    def get_game_news(self, appid,count=3,maxlength=300):
-        if appid in self.cache['game_news']:
-            return self.cache['game_news'][appid]
-        
-        response = requests.get(f"http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid={appid}&count={count}&maxlength={maxlength}&format=json")
-        data = response.json()['response']
-        self.cache['game_news'][appid] = data
-        return data
-    
     def get_global_achievement_percentage(self, appid):
         if appid in self.cache['game_global_achievement']:
             return self.cache['game_global_achievement'][appid]
@@ -126,7 +117,19 @@ class Steam:
         vanityurl = str(vanityurl).replace("https://steamcommunity.com/id/", "").replace("/", "")
         response = requests.get(f"http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key={self.STEAM_KEY}&vanityurl={vanityurl}")
         return response["response"]
+
+    # Game API Calls
+    def get_game_details(self, appid):
+        pass
     
+    def get_game_news(self, appid,count=3,maxlength=300):
+        if appid in self.cache['game_news']:
+            return self.cache['game_news'][appid]
+        
+        response = requests.get(f"http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid={appid}&count={count}&maxlength={maxlength}&format=json")
+        data = response.json()['response']
+        self.cache['game_news'][appid] = data
+        return data
     def clear_cache(self):
         for cache_key in self.cache:
             self.cache[cache_key] = {}
