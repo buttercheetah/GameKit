@@ -32,5 +32,5 @@ jobs:
     - name: Build and publish the Docker image
       run: |
         docker build . --file Dockerfile --tag ghcr.io/buttercheetah/gamekit:${{ steps.extract_branch.outputs.tagname }}
-        docker run ghcr.io/buttercheetah/gamekit:${{ steps.extract_branch.outputs.tagname }} /python-docker/tests/test-SteamHandler.py
+        docker run ghcr.io/buttercheetah/gamekit:${{ steps.extract_branch.outputs.tagname }} python3 python-docker/tests/test-SteamHandler.py
         docker push ghcr.io/buttercheetah/gamekit:${{ steps.extract_branch.outputs.tagname }}
