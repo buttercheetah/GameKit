@@ -25,7 +25,7 @@ jobs:
       run: |
           branchName=${GITHUB_REF#refs/heads/}
           branchName=$(echo "$branchName" | tr '[:upper:]' '[:lower:]')
-          branchName=$(echo "$original_string" | sed 's/\//_/g')
+          branchName=$(echo "$branchName" | sed 's/\//_/g')
           if [ "$branchName" = 'main' ]; then tagname='latest'; else tagname=$branchName; fi
           echo "::set-output name=tagname::$(echo $tagname)"
       id: extract_branch
