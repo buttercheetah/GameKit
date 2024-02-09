@@ -1,29 +1,14 @@
 import requests, os, random, SteamHandler
 from json import dumps
 from flask import Flask, Response, render_template, redirect, request
-from urllib.parse import urlencode
 app = Flask(__name__)
 
 Steam = SteamHandler.Steam(os.environ.get('STEAM_KEY', 'Steam_api_key'))
 web_url = os.environ.get('WEB_URL', 'web_url')
-steam_openid_url = 'https://steamcommunity.com/openid/login'
 
 @app.route("/auth")
 def auth_with_steam():
-
-  params = {
-    'openid.ns': "http://specs.openid.net/auth/2.0",
-    'openid.identity': "http://specs.openid.net/auth/2.0/identifier_select",
-    'openid.claimed_id': "http://specs.openid.net/auth/2.0/identifier_select",
-    'openid.mode': 'checkid_setup',
-    'openid.return_to': f'{web_url}/authorize',
-    'openid.realm': f'{web_url}'
-  }
-
-  query_string = urlencode(params)
-  auth_url = steam_openid_url + "?" + query_string
-  print(auth_url)
-  return redirect(auth_url)
+  return redirect(Steam.get_openid_url(web_url))
 
 @app.route("/authorize")
 def authorize():
