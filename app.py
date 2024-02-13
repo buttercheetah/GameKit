@@ -18,12 +18,22 @@ def authorize():
     return render_template("steam_login_receive_redirect.html",redirect_url=f"{web_url}/user/{user_id}",user_id=user_id)
     #return redirect(f"{web_url}/user/{str(request.args['openid.identity']).replace('https://steamcommunity.com/openid/id/','')}")
 
-
-
+@app.route("/search/")
+def search():
+    search_query = request.args.get('search')
+    search_type = request.args.get('type')
+    if str(search_query).isnumeric():
+        return redirect(f"{web_url}/user/{search_query}")
+    else:
+        vanitysearch = Steam.resolve_vanity_url(search_query)
+        if vanitysearch['success'] == True:
+            return redirect(f"{web_url}/user/{vanitysearch['steamid']}")
+        else:
+            return Response(404)
 
 @app.route('/')
 def default():
-    return render_template("examples/main_page_example.html", web_url=web_url)
+    return render_template("Search Page.html", web_url=web_url)
 
 @app.route('/dev/test')
 def test():
