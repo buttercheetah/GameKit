@@ -62,13 +62,26 @@ def game_list(steamid):
 
 @app.route("/api/friends")
 def game_api():
-    steamid = request.args.get('steamid')
-    return Steam.get_user_friend_list(steamid)
+    try:
+        steamid = request.args.get('steamid')
+        return Steam.get_user_friend_list(steamid)
+    except:
+        return Response(
+        "Data is Private",
+        status=401,
+    )
+    
 
 @app.route("/api/games")
 def friend_api():
-    steamid = request.args.get('steamid')
-    return Steam.get_user_owned_games(steamid)
+    try:
+        steamid = request.args.get('steamid')
+        return Steam.get_user_owned_games(steamid)
+    except:
+        return Response(
+        "Data is Private",
+        status=401,
+    )
 
 @app.route('/js/<path:path>')
 def send_report(path):
