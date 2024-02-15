@@ -40,6 +40,9 @@ def search():
 #    print(Steam.get_user_summeries("76561197990263870"))
 #    return Steam.get_user_friend_list("76561198180337238")
 
+@app.route('/login')
+def login():
+    return render_template("LoginPage.html")
 @app.route('/user/<steamid>')
 def user(steamid):
     return render_template("UserPage.html", user=Steam.get_user_summeries([steamid])[steamid])
