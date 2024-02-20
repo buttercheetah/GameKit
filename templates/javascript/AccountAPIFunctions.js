@@ -48,10 +48,20 @@ async function loadGames(usteamid) {
             i++;
             if (i == 10) { break; }
             const game = data['games'][gamedata];
-            console.log(`http://media.steampowered.com/steamcommunity/public/images/apps/${game.appid}/${game.img_icon_url}.jpg - ${game.name} - ${game.playtime_forever}`);
-            document.getElementById("games_list").innerHTML += `<li><img src=http://media.steampowered.com/steamcommunity/public/images/apps/${game.appid}/${game.img_icon_url}.jpg> - ${game.name} - ${game.playtime_forever}</li>`;
+            console.log(`http://media.steampowered.com/steamcommunity/public/images/apps/${game.appid}/${game.img_icon_url}.jpg - ${game.name}`);
+            document.getElementById("games_list").innerHTML += `<li><img src=http://media.steampowered.com/steamcommunity/public/images/apps/${game.appid}/${game.img_icon_url}.jpg> - ${game.name}</li>`;
         }
     document.getElementById("games_list").innerHTML += `</ul>`;
+
+    const sortedGames = data['games'].sort((a, b) => b.playtime_forever - a.playtime_forever);
+    // Display the top 10 most played games
+    document.getElementById("most_played_games").innerHTML = `<ul>`;
+    for (let i = 0; i < Math.min(10, sortedGames.length); i++) {
+        const game = sortedGames[i];
+        console.log(`http://media.steampowered.com/steamcommunity/public/images/apps/${game.appid}/${game.img_icon_url}.jpg - ${game.name} - ${game.playtime_forever}`);
+        document.getElementById("most_played_games").innerHTML += `<li><img src=http://media.steampowered.com/steamcommunity/public/images/apps/${game.appid}/${game.img_icon_url}.jpg> - ${game.name} - ${Math.floor(game.playtime_forever/60)} hours</li>`;
+    }
+    document.getElementById("most_played_games").innerHTML += `</ul>`;
     })
     .catch(error => {
         console.error('Error:', error);
