@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
+		<script src="https://kit.fontawesome.com/b353a8d556.js" crossorigin="anonymous"></script>
 		<!-- Wireframe2 -->
 		<title>Gamekit {{ user['personaname'] }}</title>
 		<script src="/js/AccountAPIFunctions.js"></script>
@@ -18,9 +19,19 @@
 	<body>
 	
 		<header>
-		 <p>Navigation tool</p>
-		 <form>
-		  <p>This is where the search bar will go</p>
+		<a href="{{ web_url }}/">
+			<p>Search</p>
+		</a>
+		<a href="{{ web_url }}/auth">
+			<p>Profile</p>
+		</a>
+		<form class="search-bar" action="/search" method="get">
+			<input type="search", placeholder="Profile ID/Vanity URL" name="search" size="200">
+			<select name="type" id="type">
+				<option value="Account">Account</option>
+				<option value="Publisher">Publisher</option>
+			</select>
+			<button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
 		 </form>
 		 <p>Account settings</p>
 		</header>
