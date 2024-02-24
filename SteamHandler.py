@@ -166,7 +166,12 @@ class Steam:
         data = response.json()['response']
         self.cache['user_groups'][steamid] = data
         return data
-        
+    
+    def get_number_pf_players(self, appid):
+        response = requests.get(f"https://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1?appid={appid}")
+        data = response.json()['response']
+        return data
+
 
     def clear_cache(self):
         for cache_key in self.cache:
