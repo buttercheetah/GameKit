@@ -14,7 +14,8 @@ class Steam:
             'app_news': {},
             'game_global_achievement': {},
             'app_details': {},
-            'user_inventory': {}
+            'user_inventory': {},
+            'user_groups': {}
         }
 
     # OpenID
@@ -157,6 +158,14 @@ class Steam:
         self.cache['user_inventory'][steamid] = data
         return data
 
+    def get_user_group_list(self, steamid):
+        if steamid in self.cache['user_groups']:
+            return self.cache['user_groups'][steamid]
+        
+        response = requests.get(f"https://api.steampowered.com/ISteamUser/GetUserGroupList/v1?steamid={steamid}&key={self.STEAM_KEY}")
+        data = response.json()['response']
+        self.cache['user_groups'][steamid] = data
+        return data
         
 
     def clear_cache(self):
