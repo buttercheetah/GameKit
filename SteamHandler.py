@@ -15,7 +15,8 @@ class Steam:
             'game_global_achievement': {},
             'app_details': {},
             'user_inventory': {},
-            'user_groups': {}
+            'user_groups': {},
+            'user_level': {}
         }
 
     # OpenID
@@ -167,11 +168,19 @@ class Steam:
         self.cache['user_groups'][steamid] = data
         return data
     
-    def get_number_pf_players(self, appid):
+    def get_number_of_players_in_game(self, appid):
         response = requests.get(f"https://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1?appid={appid}")
         data = response.json()['response']
         return data
 
+    def get_user_steam_level(self, steamid):
+        if steamid in self.cache['user_level']:
+            return self.cache['user_level'][steamid]
+        
+        response = requests.get(f"https://api.steampowered.com/IPlayerService/GetSteamLevel/v1?steamid={steamid}&key={self.STEAM_KEY}")
+        data = response.json()['response']
+        self.cache['user_level'][steamid] = data
+        return data
 
     def clear_cache(self):
         for cache_key in self.cache:
