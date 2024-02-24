@@ -16,7 +16,8 @@ class Steam:
             'app_details': {},
             'user_inventory': {},
             'user_groups': {},
-            'user_level': {}
+            'user_level': {},
+            'user_badges': {}
         }
 
     # OpenID
@@ -180,6 +181,15 @@ class Steam:
         response = requests.get(f"https://api.steampowered.com/IPlayerService/GetSteamLevel/v1?steamid={steamid}&key={self.STEAM_KEY}")
         data = response.json()['response']
         self.cache['user_level'][steamid] = data
+        return data
+    
+    def get_user_badges(self, steamid):
+        if steamid in self.cache['user_badges']:
+            return self.cache['user_badges'][steamid]
+        
+        response = requests.get(f"https://api.steampowered.com/IPlayerService/GetBadges/v1?steamid={steamid}&key={self.STEAM_KEY}")
+        data = response.json()['response']
+        self.cache['user_badges'][steamid] = data
         return data
 
     def clear_cache(self):
