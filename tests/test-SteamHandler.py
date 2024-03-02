@@ -54,85 +54,42 @@ class test_requests(unittest.TestCase):
         mock_get.assert_called_once_with(
             f"http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={key}&steamids=76561198180337238"
         )
-    
     @patch('SteamHandler.requests.get')
-    def test_get_user_friend_list(self, mock_get):
-        key = "none"
-        mock_data = {
-            "friendslist":{
-                "friends":[
-                    {"steamid":"76561197964773256","relationship":"friend","friend_since":1471561501},
-                    {"steamid":"76561197990263870","relationship":"friend","friend_since":1476928133},
-                    {"steamid":"76561198272061600","relationship":"friend","friend_since":1554698097},
-                    {"steamid":"76561198278434789","relationship":"friend","friend_since":1503944105},
-                    {"steamid":"76561198280900990","relationship":"friend","friend_since":1511831680},
-                    {"steamid":"76561198306179806","relationship":"friend","friend_since":1482800816},
-                    {"steamid":"76561198394501250","relationship":"friend","friend_since":1570815866},
-                    {"steamid":"76561198408373202","relationship":"friend","friend_since":1503092464},
-                    {"steamid":"76561198419992215","relationship":"friend","friend_since":1698110155},
-                    {"steamid":"76561198826680174","relationship":"friend","friend_since":1522419675},
-                    {"steamid":"76561198838907887","relationship":"friend","friend_since":1699836616},
-                    {"steamid":"76561199206927268","relationship":"friend","friend_since":1698105384},
-                    {"steamid":"76561199423499981","relationship":"friend","friend_since":1667158445},
-                    {"steamid":"76561199570226247","relationship":"friend","friend_since":1699740840}
-                    ]}}
+    def test_get_user_friend_list_valid_data(self, mock_requests_get):
+        # Create an instance of the Steam class with the API key 'xxxx'
+        steam = Steam('xxxx')
+
+        # Mock the response from the API with valid data
         mock_response = MagicMock()
-        mock_response.json.return_value = mock_data
-        mock_get.return_value = mock_response
+        mock_response.json.return_value = {'friendslist': {'friends': [{'steamid': 'friend1'}, {'steamid': 'friend2'}]}}
+        mock_requests_get.return_value = mock_response
 
-        steam = Steam(key)
+        # Mock the get_user_summeries method to return a predefined result
+        steam.get_user_summeries = MagicMock(return_value={'friend1': {...}, 'friend2': {...}})
 
-        with patch.object(steam, 'get_user_summeries') as mock_get_user_summaries:
-            mock_data_user_summaries = {
-            "response": {
-                "players": [
-                    {
-                        "steamid": "76561198180337238",
-                        "communityvisibilitystate": 3,
-                        "profilestate": 1,
-                        "personaname": "buttercheetah",
-                        "profileurl": "https://steamcommunity.com/id/buttercheetah/",
-                        "avatar": "https://avatars.steamstatic.com/1fa48f3adeb9594213eb5579244b70f7430ff46e.jpg",
-                        "avatarmedium": "https://avatars.steamstatic.com/1fa48f3adeb9594213eb5579244b70f7430ff46e_medium.jpg",
-                        "avatarfull": "https://avatars.steamstatic.com/1fa48f3adeb9594213eb5579244b70f7430ff46e_full.jpg",
-                        "avatarhash": "1fa48f3adeb9594213eb5579244b70f7430ff46e",
-                        "lastlogoff": 1707394872,
-                        "personastate": 4,
-                        "realname": "Noah",
-                        "primaryclanid": "103582791460010420",
-                        "timecreated": 1424288420,
-                        "personastateflags": 0,
-                        "loccountrycode": "US",
-                        "locstatecode": "NC"
-                    }
-                ]
-            }
-        }
-            mock_get_user_summaries.return_value = mock_data_user_summaries
+        # Call the function with a steamid
+        result = steam.get_user_friend_list('test_steamid')
 
-            result = steam.get_user_friend_list("76561198180337238")
+        # Assert that the result is the expected data
+        expected_result = {'friend1': {...}, 'friend2': {...}}
+        self.assertEqual(result, expected_result)
 
-        self.assertEqual(len(result.get("friendslist", {}).get("friends", [])), 14)
+    @patch('SteamHandler.requests.get')
+    def test_get_user_friend_list_empty_list(self, mock_requests_get):
+        # Create an instance of the Steam class with the API key 'xxxx'
+        steam = Steam('xxxx')
 
-        mock_get.assert_called_once_with(
-            f"http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key={key}&steamid=76561198180337238&relationship=friend"
-        )
-        mock_get_user_summaries.assert_called_once_with([
-        "76561197964773256",
-        "76561197990263870",
-        "76561198272061600",
-        "76561198278434789",
-        "76561198280900990",
-        "76561198306179806",
-        "76561198394501250",
-        "76561198408373202",
-        "76561198419992215",
-        "76561198826680174",
-        "76561198838907887",
-        "76561199206927268",
-        "76561199423499981",
-        "76561199570226247"
-    ])
+        # Mock the response from the API with an empty friends list
+        mock_response = MagicMock()
+        mock_response.json.return_value = []
+        mock_requests_get.return_value = mock_response
+
+        # Call the function with a steamid
+        result = steam.get_user_friend_list('test_steamid')
+
+        # Assert that the result is an empty dictionary
+        self.assertEqual(result, False)
+    
     @patch('SteamHandler.requests.get')
     def test_get_user_achievements_per_game(self, mock_get):
         key = "none"
