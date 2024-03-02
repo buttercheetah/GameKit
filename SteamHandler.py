@@ -47,6 +47,8 @@ class Steam:
             # Make one request for all not cached steamids
             response = requests.get(f"http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={self.STEAM_KEY}&steamids={','.join(not_cached_steamids)}")
             data = response.json()
+            if data["response"]["players"] == []:
+                return False
 
             # Update the cache with the new data
             for user in data["response"]["players"]:
@@ -64,7 +66,7 @@ class Steam:
 
         response = requests.get(f"http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key={self.STEAM_KEY}&steamid={steamid}&relationship=friend")
         if not "friendslist" in response.json():
-            print(response.json(), "Error getting friends data")
+            #print(response.json(), "Error getting friends data")
             return False
         friend_ids = [i['steamid'] for i in response.json()["friendslist"]["friends"]]
         data = self.get_user_summeries(friend_ids)
