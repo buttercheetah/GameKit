@@ -260,5 +260,41 @@ class test_requests(unittest.TestCase):
         mock_get.assert_called_once_with(
             f"http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key={key}&steamid={steamid}&count={count}&format=json"
         )
+    @patch('SteamHandler.requests.get')
+    def test_get_global_achievement_percentage(self, mock_get):
+        key="none"
+        appid="1172470"
+        mock_data = {
+            "achievementpercentages":{
+                "achievements":[
+                    {"name":"JUMPMASTER_4","percent":49.5},
+                    {"name":"TEAM_PLAYER_2","percent":42},
+                    {"name":"KILL_LEADER_6","percent":41.2000007629394531},
+                    {"name":"FULLY_KITTED_3","percent":40.2000007629394531},
+                    {"name":"APEX_RECON_10","percent":35.9000015258789063},
+                    {"name":"APEX_OFFENSE_7","percent":34.7999992370605469},
+                    {"name":"APEX_SUPPORT_9","percent":27.7000007629394531},
+                    {"name":"DECKED_OUT_1","percent":27.2000007629394531},
+                    {"name":"THE_PLAYER_0","percent":24.6000003814697266},
+                    {"name":"APEX_DEFENSE_8","percent":19.8999996185302734},
+                    {"name":"WELL_ROUNDED_5","percent":16.2000007629394531},
+                    {"name":"APEX_LEGEND_11","percent":14.8000001907348633}
+                ]
+            }
+        }
+
+        mock_response = MagicMock()
+        mock_response.json.return_value = mock_data
+        mock_get.return_value = mock_response
+
+        steam = Steam(key)
+
+        result = steam.get_global_achievement_percentage(appid)
+
+        self.assertIsNotNone(result["achievements"])
+        mock_get.assert_called_once_with(
+            f"http://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid={appid}&format=json"
+        )
 if __name__ == '__main__':
+
     unittest.main()
