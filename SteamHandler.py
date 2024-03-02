@@ -47,6 +47,8 @@ class Steam:
             # Make one request for all not cached steamids
             response = requests.get(f"http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={self.STEAM_KEY}&steamids={','.join(not_cached_steamids)}")
             data = response.json()
+            if data["response"]["players"] == []:
+                return False
 
             # Update the cache with the new data
             for user in data["response"]["players"]:

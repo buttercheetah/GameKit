@@ -55,6 +55,25 @@ class test_requests(unittest.TestCase):
             f"http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={key}&steamids=76561198180337238"
         )
     @patch('SteamHandler.requests.get')
+    def test_get_user_summeries_empty(self, mock_get):
+        key = "none"
+        mock_data = {"response":{"players":[]}}
+        mock_response = MagicMock()
+        mock_response.json.return_value = mock_data
+        mock_get.return_value = mock_response
+
+        # Initialize your class
+        steam = Steam(key)
+
+        # Call the method you want to test with a single steamid
+        result = steam.get_user_summeries(["76561198180337238"])
+        # Assertions
+        self.assertEqual(result, False)  # Check if the steamid is in the result
+        # Verify that requests.get was called with the expected URL
+        mock_get.assert_called_once_with(
+            f"http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={key}&steamids=76561198180337238"
+        )
+    @patch('SteamHandler.requests.get')
     def test_get_user_friend_list_valid_data(self, mock_requests_get):
         # Create an instance of the Steam class with the API key 'xxxx'
         steam = Steam('xxxx')
