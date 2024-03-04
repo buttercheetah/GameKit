@@ -21,6 +21,17 @@ class test_requests(unittest.TestCase):
             </body>
         </html>
         """
+        self.internal_server_error = """
+        <html>
+            <head>
+                <title>Internal Server Error</title>
+            </head>
+            <body>
+                <h1>Internal Server Error</h1>
+                Unknown problem determining WebApi request destination.
+            </body>
+        </html>
+        """
 
     @patch('SteamHandler.requests.get')
     def test_get_user_summeries(self, mock_get):
@@ -176,6 +187,7 @@ class test_requests(unittest.TestCase):
             }
         mock_response = MagicMock()
         mock_response.json.return_value = mock_data
+        type(mock_response).status_code = PropertyMock(return_value=200)
         mock_get.return_value = mock_response
 
         steam = Steam(key)
@@ -187,6 +199,53 @@ class test_requests(unittest.TestCase):
         self.assertEqual(result["playerstats"]["gameName"], "Telstar_APL")
         self.assertEqual(result["playerstats"]["achievements"][0]["name"], "THE_PLAYER_0")
         self.assertEqual(result["playerstats"]["achievements"][0]["achieved"], 1)
+
+        mock_get.assert_called_once_with(
+            f"http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid={appid}&key={key}&steamid={steamid}"
+        )
+
+    @patch('SteamHandler.requests.get')
+    def test_get_user_stats_none(self, mock_get):
+        key="none"
+        steamid="76561198180337238"
+        appid="1172470"
+
+        mock_data = {}
+        mock_response = MagicMock()
+        mock_response.json.return_value = mock_data
+        type(mock_response).status_code = PropertyMock(return_value=200)
+        mock_get.return_value = mock_response
+
+        steam = Steam(key)
+
+        result = steam.get_user_stats_for_game(steamid, appid)
+
+        # Assertions (Not checking Every achievement)
+        self.assertIsNone(result)
+
+        mock_get.assert_called_once_with(
+            f"http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid={appid}&key={key}&steamid={steamid}"
+        )
+
+    @patch('SteamHandler.requests.get')
+    def test_get_user_stats_ise(self, mock_get):
+        # Testing outcome if valve returns a internal server error
+        key="none"
+        steamid="76561198180337238"
+        appid="1172470"
+
+        mock_data = self.internal_server_error
+        mock_response = MagicMock()
+        mock_response.return_value = mock_data
+        type(mock_response).status_code = PropertyMock(return_value=500)
+        mock_get.return_value = mock_response
+
+        steam = Steam(key)
+
+        result = steam.get_user_stats_for_game(steamid, appid)
+
+        # Assertions (Not checking Every achievement)
+        self.assertIsNone(result)
 
         mock_get.assert_called_once_with(
             f"http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid={appid}&key={key}&steamid={steamid}"

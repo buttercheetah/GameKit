@@ -89,7 +89,11 @@ class Steam:
             return self.cache['user_stats_for_game'][cache_key]
         
         response = requests.get(f"http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid={appid}&key={self.STEAM_KEY}&steamid={steamid}")
+        if response.status_code not in range(200,299):
+            return None
         data = response.json()
+        if data == {}:
+            return None
         self.cache['user_stats_for_game'][cache_key] = data
         return data
 
