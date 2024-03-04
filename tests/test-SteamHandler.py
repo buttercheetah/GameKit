@@ -169,6 +169,32 @@ class test_requests(unittest.TestCase):
         mock_get.assert_called_once_with(
             f"http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid={appid}&key={key}&steamid={steamid}"
         )
+    
+    @patch('SteamHandler.requests.get')
+    def test_get_user_achievements_per_game_none(self, mock_get):
+        key = "none"
+        steamid = "76561198180337238"
+        appid = "1172470"
+
+        # Set up mock response
+        mock_data = {"playerstats":{"error":"Requested app has no stats","success":False}}
+        
+        mock_response = MagicMock()
+        mock_response.json.return_value = mock_data
+        mock_get.return_value = mock_response
+
+        steam = Steam(key)
+
+        result = steam.get_user_achievements_per_game(steamid, appid)
+
+        # Assertions (Checking for game name and steam id)
+        self.assertFalse(result['playerstats']['success'], steamid)
+        self.assertIsNotNone(result)
+
+        mock_get.assert_called_once_with(
+            f"http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid={appid}&key={key}&steamid={steamid}"
+        )
+    
     @patch('SteamHandler.requests.get')
     def test_get_user_stats(self, mock_get):
         key="none"
