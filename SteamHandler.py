@@ -112,7 +112,10 @@ class Steam:
             return self.cache['game_global_achievement'][appid]
         
         response = requests.get(f"http://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid={appid}&format=json")
-        data = response.json()['achievementpercentages']
+        data = response.json()
+        if data == {}:
+            return None
+        data = data['achievementpercentages']
         self.cache['game_global_achievement'][appid] = data
         return data
     

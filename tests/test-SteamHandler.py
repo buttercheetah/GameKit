@@ -295,6 +295,24 @@ class test_requests(unittest.TestCase):
         mock_get.assert_called_once_with(
             f"http://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid={appid}&format=json"
         )
+    @patch('SteamHandler.requests.get')
+    def test_get_global_achievement_percentage_none(self, mock_get):
+        key="none"
+        appid="1172470"
+        mock_data = {}
+
+        mock_response = MagicMock()
+        mock_response.json.return_value = mock_data
+        mock_get.return_value = mock_response
+
+        steam = Steam(key)
+
+        result = steam.get_global_achievement_percentage(appid)
+
+        self.assertIsNone(result)
+        mock_get.assert_called_once_with(
+            f"http://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid={appid}&format=json"
+        )
 if __name__ == '__main__':
 
     unittest.main()
