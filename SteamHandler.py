@@ -98,6 +98,8 @@ class Steam:
             return self.cache['user_owned_games'][steamid]
         
         response = requests.get(f"http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key={self.STEAM_KEY}&steamid={steamid}&include_appinfo=true&format=json")
+        if response.status_code not in range(200,299):
+            return None
         data = response.json()['response']
         self.cache['user_owned_games'][steamid] = data
         return data
@@ -105,7 +107,7 @@ class Steam:
     def get_user_recently_played(self, steamid,count):
         # Implement cache
         response = requests.get(f"http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key={self.STEAM_KEY}&steamid={steamid}&count={count}&format=json")
-        if response.status_code != 200:
+        if response.status_code not in range(200,299):
             return None
         return response.json()["response"]
 

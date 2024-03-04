@@ -7,6 +7,21 @@ from SteamHandler import Steam
 from unittest.mock import patch, MagicMock, PropertyMock
 
 class test_requests(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(self):
+        self.bad_request_body = """
+        <html>
+            <head>
+                <title>Bad Request</title>
+            </head>
+            <body>
+                <h1>Bad Request</h1>
+                Please verify that all required parameters are being sent
+            </body>
+        </html>
+        """
+
     @patch('SteamHandler.requests.get')
     def test_get_user_summeries(self, mock_get):
         key = "none"
@@ -202,35 +217,39 @@ class test_requests(unittest.TestCase):
         key="none"
         steamid="76561198348585939"
         mock_data = {"response":{
-            "game_count":17,
+            "game_count":2,
             "games":[
                 {"appid":1250,"name":"Killing Floor","playtime_forever":1,"img_icon_url":"d8a2d777cb4c59cf06aa244166db232336520547","has_community_visible_stats":True},
                 {"appid":35420,"name":"Killing Floor Mod: Defence Alliance 2","playtime_forever":0,"img_icon_url":"ae7580a60cf77b754c723c72d5e31d530fbe7804","has_community_visible_stats":True},
-                {"appid":72850,"name":"The Elder Scrolls V: Skyrim","playtime_forever":294,"img_icon_url":"b9aca8a189abd8d6aaf09047dbb0f57582683e1c","has_community_visible_stats":True,"content_descriptorids":[5]},
-                {"appid":271590,"name":"Grand Theft Auto V","playtime_2weeks":5021,"playtime_forever":16021,"img_icon_url":"1e72f87eb927fa1485e68aefaff23c7fd7178251","has_community_visible_stats":True,"content_descriptorids":[5]},
-                {"appid":282660,"name":"Easy eSports","playtime_forever":170,"img_icon_url":"38a313d2413d5c679dcf41e169cc4d815765d775"},{"appid":304050,"name":"Trove","playtime_forever":0,"img_icon_url":"76b62601bb6f0551c415697fe92a6653340f4a5e","has_community_visible_stats":True},
-                {"appid":291480,"name":"Warface: Clutch","playtime_forever":589,"img_icon_url":"66ef308279871d99ca776d4602bf02a354570368","has_community_visible_stats":True,"content_descriptorids":[2,5]},
-                {"appid":730,"name":"Counter-Strike 2","playtime_forever":72014,"img_icon_url":"8dbc71957312bbd3baea65848b545be9eae2a355","has_community_visible_stats":True,"content_descriptorids":[2,5]},
-                {"appid":346900,"name":"AdVenture Capitalist","playtime_forever":584,"img_icon_url":"b4dd5ca1582ed52335b31960e05766fd22fa7cc4","has_community_visible_stats":True},
-                {"appid":397900,"name":"Business Tour - Online Multiplayer Board Game","playtime_forever":81,"img_icon_url":"b6ce52a576e99f54c5d18f675540b9c3ee70ed47","has_community_visible_stats":True},
-                {"appid":431240,"name":"Golf With Your Friends","playtime_forever":5052,"img_icon_url":"c6379c8ec66ac02565f1155bf3821b846164d93c","has_community_visible_stats":True},
-                {"appid":591740,"name":"Sniper Fury","playtime_forever":4,"img_icon_url":"4fd67bcc9743993bbca2ad2aad9b4da68f7e6b6d","has_community_visible_stats":True,"content_descriptorids":[2,5]},
-                {"appid":218620,"name":"PAYDAY 2","playtime_forever":2130,"img_icon_url":"a6abc0d0c1e79c0b5b0f5c8ab81ce9076a542414","has_community_visible_stats":True},
-                {"appid":652980,"name":"Loading Screen Simulator","playtime_forever":94,"img_icon_url":"a05d56896d73128b477f78062b6cfc72f03c30d1","has_community_visible_stats":True},
-                {"appid":674940,"name":"Stick Fight: The Game","playtime_forever":683,"img_icon_url":"28bc7ba8952d488e01e7136126cbbc3b42ee443a","has_community_visible_stats":True},
-                {"appid":304930,"name":"Unturned","playtime_forever":0,"img_icon_url":"e18009fb628b35953826efe47dc3be556b689f4c","has_community_visible_stats":True},
-                {"appid":1170970,"name":"Marbles on Stream","playtime_forever":0,"img_icon_url":"f9af9e6dba742ed3643cb0d9d8c88163ea044f9a","has_community_visible_stats":True}
                 ]
             }
         }
         mock_response = MagicMock()
+        type(mock_response).status_code = PropertyMock(return_value=200)
         mock_response.json.return_value = mock_data
         mock_get.return_value = mock_response
 
         steam = Steam(key)
         result = steam.get_user_owned_games(steamid)
-        self.assertEqual(result["game_count"], 17)
+        self.assertEqual(result["game_count"], 2)
         self.assertEqual(result["games"][0]["name"], "Killing Floor")
+
+        mock_get.assert_called_once_with(
+            f"http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key={key}&steamid={steamid}&include_appinfo=true&format=json"
+        )
+    @patch('SteamHandler.requests.get')
+    def test_user_owned_games_none(self, mock_get):
+        key="none"
+        steamid="76561198348585939"
+        mock_data = self.bad_request_body
+        mock_response = MagicMock()
+        mock_response.return_value = mock_data
+        type(mock_response).status_code = PropertyMock(return_value=400)
+        mock_get.return_value = mock_response
+
+        steam = Steam(key)
+        result = steam.get_user_owned_games(steamid)
+        self.assertIsNone(result)
 
         mock_get.assert_called_once_with(
             f"http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key={key}&steamid={steamid}&include_appinfo=true&format=json"
@@ -266,17 +285,7 @@ class test_requests(unittest.TestCase):
         steamid="76561198180337238"
         count="1"
         
-        mock_data = """
-        <html>
-            <head>
-                <title>Bad Request</title>
-            </head>
-            <body>
-                <h1>Bad Request</h1>
-                Please verify that all required parameters are being sent
-            </body>
-        </html>
-        """
+        mock_data = self.bad_request_body
 
         mock_response = MagicMock()
         mock_response.return_value = mock_data
@@ -297,17 +306,7 @@ class test_requests(unittest.TestCase):
             "achievementpercentages":{
                 "achievements":[
                     {"name":"JUMPMASTER_4","percent":49.5},
-                    {"name":"TEAM_PLAYER_2","percent":42},
-                    {"name":"KILL_LEADER_6","percent":41.2000007629394531},
-                    {"name":"FULLY_KITTED_3","percent":40.2000007629394531},
-                    {"name":"APEX_RECON_10","percent":35.9000015258789063},
-                    {"name":"APEX_OFFENSE_7","percent":34.7999992370605469},
-                    {"name":"APEX_SUPPORT_9","percent":27.7000007629394531},
-                    {"name":"DECKED_OUT_1","percent":27.2000007629394531},
-                    {"name":"THE_PLAYER_0","percent":24.6000003814697266},
-                    {"name":"APEX_DEFENSE_8","percent":19.8999996185302734},
-                    {"name":"WELL_ROUNDED_5","percent":16.2000007629394531},
-                    {"name":"APEX_LEGEND_11","percent":14.8000001907348633}
+                    {"name":"TEAM_PLAYER_2","percent":42}
                 ]
             }
         }
