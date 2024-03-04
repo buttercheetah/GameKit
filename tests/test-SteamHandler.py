@@ -137,17 +137,7 @@ class test_requests(unittest.TestCase):
                 "gameName":"Apex Legends",
                 "achievements":[
                     {"apiname":"THE_PLAYER_0","achieved":1,"unlocktime":1605558532},
-                    {"apiname":"DECKED_OUT_1","achieved":1,"unlocktime":1605822181},
-                    {"apiname":"TEAM_PLAYER_2","achieved":1,"unlocktime":1605560061},
-                    {"apiname":"FULLY_KITTED_3","achieved":1,"unlocktime":1605562915},
-                    {"apiname":"JUMPMASTER_4","achieved":1,"unlocktime":1605559403},
-                    {"apiname":"WELL_ROUNDED_5","achieved":1,"unlocktime":1605559308},
-                    {"apiname":"KILL_LEADER_6","achieved":1,"unlocktime":1605563749},
-                    {"apiname":"APEX_OFFENSE_7","achieved":1,"unlocktime":1609795225},
-                    {"apiname":"APEX_DEFENSE_8","achieved":1,"unlocktime":1605560965},
-                    {"apiname":"APEX_SUPPORT_9","achieved":1,"unlocktime":1609959225},
-                    {"apiname":"APEX_RECON_10","achieved":1,"unlocktime":1613069923},
-                    {"apiname":"APEX_LEGEND_11","achieved":1,"unlocktime":1605560964}],
+                    {"apiname":"DECKED_OUT_1","achieved":1,"unlocktime":1605822181}],
                     "success":True
                 }
             }
@@ -180,17 +170,7 @@ class test_requests(unittest.TestCase):
                 "gameName":"Telstar_APL",
                 "achievements":[
                     {"name":"THE_PLAYER_0","achieved":1},
-                    {"name":"DECKED_OUT_1","achieved":1},
-                    {"name":"TEAM_PLAYER_2","achieved":1},
-                    {"name":"FULLY_KITTED_3","achieved":1},
-                    {"name":"JUMPMASTER_4","achieved":1},
-                    {"name":"WELL_ROUNDED_5","achieved":1},
-                    {"name":"KILL_LEADER_6","achieved":1},
-                    {"name":"APEX_OFFENSE_7","achieved":1},
-                    {"name":"APEX_DEFENSE_8","achieved":1},
-                    {"name":"APEX_SUPPORT_9","achieved":1},
-                    {"name":"APEX_RECON_10","achieved":1},
-                    {"name":"APEX_LEGEND_11","achieved":1}
+                    {"name":"DECKED_OUT_1","achieved":1}
                     ]
                 }
             }
