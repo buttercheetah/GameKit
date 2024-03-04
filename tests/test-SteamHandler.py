@@ -4,7 +4,7 @@ import os
 # While I am ware that there is a better way of doing this, i simply dont care enough to do it as it would require reformating the entire application.
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from SteamHandler import Steam
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch, MagicMock, PropertyMock
 
 class test_requests(unittest.TestCase):
     @patch('SteamHandler.requests.get')
@@ -252,11 +252,40 @@ class test_requests(unittest.TestCase):
         mock_response = MagicMock()
         mock_response.json.return_value = mock_data
         mock_get.return_value = mock_response
-        
+        type(mock_response).status_code = PropertyMock(return_value=200)
         steam = Steam(key)
 
         result = steam.get_user_recently_played(steamid, count)
         self.assertEqual(result["total_count"], 2)
+        mock_get.assert_called_once_with(
+            f"http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key={key}&steamid={steamid}&count={count}&format=json"
+        )
+    @patch('SteamHandler.requests.get')
+    def test_get_user_recently_played_none(self, mock_get):
+        key="none"
+        steamid="76561198180337238"
+        count="1"
+        
+        mock_data = """
+        <html>
+            <head>
+                <title>Bad Request</title>
+            </head>
+            <body>
+                <h1>Bad Request</h1>
+                Please verify that all required parameters are being sent
+            </body>
+        </html>
+        """
+
+        mock_response = MagicMock()
+        mock_response.return_value = mock_data
+        type(mock_response).status_code = PropertyMock(return_value=400)
+        
+        steam = Steam(key)
+
+        result = steam.get_user_recently_played(steamid, count)
+        self.assertIsNone(result)
         mock_get.assert_called_once_with(
             f"http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key={key}&steamid={steamid}&count={count}&format=json"
         )

@@ -105,6 +105,8 @@ class Steam:
     def get_user_recently_played(self, steamid,count):
         # Implement cache
         response = requests.get(f"http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key={self.STEAM_KEY}&steamid={steamid}&count={count}&format=json")
+        if response.status_code != 200:
+            return None
         return response.json()["response"]
 
     def get_global_achievement_percentage(self, appid):
