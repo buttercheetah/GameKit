@@ -160,16 +160,16 @@ class Steam:
             return self.cache['app_news'][appid]
         
         response = requests.get(f"http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid={appid}&count={count}&maxlength={maxlength}&format=json")
-        data = response.json()['response']
+        data = response.json()['appnews']
         self.cache['app_news'][appid] = data
         return data
 
     def get_user_inventory(self, steamid):
-        if appid in self.cache['user_inventory']:
+        if steamid in self.cache['user_inventory']:
             return self.cache['user_inventory'][steamid]
         
         response = requests.get(f"https://steamcommunity.com/inventory/{steamid}/440/2")
-        data = response.json()['response']
+        data = response.json()['assets']
         self.cache['user_inventory'][steamid] = data
         return data
 

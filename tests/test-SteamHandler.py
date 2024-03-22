@@ -406,6 +406,230 @@ class test_requests(unittest.TestCase):
         mock_get.assert_called_once_with(
             f"http://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid={appid}&format=json"
         )
+
+    @patch('SteamHandler.requests.get')
+    def test_resolve_vanity_url(self, mock_get):
+        key="none"
+        vanityUrl = "CrekdChase"
+        mock_data = {
+        "response": {
+            "steamid": "76561198250039738",
+            "success": 1
+        }
+        }
+        mock_response = MagicMock()
+        mock_response.json.return_value = mock_data
+        mock_get.return_value = mock_response
+
+        steam = Steam(key)
+
+        result = steam.resolve_vanity_url(vanityUrl)
+
+        self.assertEqual(result["success"], 1)
+        mock_get.assert_called_once_with(
+            f"http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key={key}&vanityurl={vanityUrl}"
+        )
+
+#    @patch('SteamHandler.requests.get')
+#   def test_get_app_details(self, mock_get):
+#        key="none"
+#        appid = "1172470"
+#        mock_data = {
+#        "response": {
+#            "players": []
+#        }
+#        }
+#        mock_response = MagicMock()
+#        mock_response.json.return_value = mock_data
+#        mock_get.return_value = mock_response#
+#
+#        steam = Steam(key)
+#
+#        result = steam.get_app_details(appid)
+#
+#        self.assertIn(result["players"])
+#        mock_get.assert_called_once_with(
+#            f"http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={key}&steamids={appid}"
+#        )
+
+    @patch('SteamHandler.requests.get')
+    def test_get_app_news(self, mock_get):
+        key = "none"
+        maxlength = 300
+        count = 3
+        appid = "1172470"
+        mock_data = {
+        "appnews": {
+            "appid": 1172470,
+            "newsitems": [
+            {
+                "gid": "5686430301718606728",
+                "title": "RULE THE UNDERGROUND IN THE SHADOW SOCIETY EVENT",
+                "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/5686430301718606728",
+                "is_external_url": "true",
+                "author": "respawn_bean",
+                "contents": "The underground pauses for no one, Legends. Become...",
+                "feedlabel": "Community Announcements",
+                "date": 1711041936,
+                "feedname": "steam_community_announcements",
+                "feed_type": 1,
+                "appid": 1172470
+            }
+            ],
+            "count": 1002
+        }
+        }
+        mock_response = MagicMock()
+        mock_response.json.return_value = mock_data
+        mock_get.return_value = mock_response
+        steam = Steam(key)
+        result = steam.get_app_news(appid)
+        self.assertEqual(result["count"], 1002)
+        mock_get.assert_called_once_with(
+            f"http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid={appid}&count={count}&maxlength={maxlength}&format=json"
+        )
+
+    @patch('SteamHandler.requests.get')
+    def test_get_user_inventory(self, mock_get):
+        key = "none"
+        id = "76561198250039738"
+        mock_data = {
+            "assets" : [{"appid" : 440}]
+        }
+        mock_response = MagicMock()
+        mock_response.json.return_value = mock_data
+        mock_get.return_value = mock_response
+        steam = Steam(key)
+        result = steam.get_user_inventory(id)
+        self.assertIsNotNone(result[0]["appid"], 440)
+        mock_get.assert_called_once_with(
+            f"https://steamcommunity.com/inventory/{id}/440/2"
+        )
+
+    @patch('SteamHandler.requests.get')
+    def test_get_user_group_list(self, mock_get):
+        key ="none"
+        id = "76561198250039738"
+        mock_data = {
+        "response": {
+            "success": "true",
+            "groups": []
+        }
+        }
+        mock_response = MagicMock()
+        mock_response.json.return_value = mock_data
+        mock_get.return_value = mock_response
+        steam = Steam(key)
+        result = steam.get_user_group_list(id)
+        self.assertEqual(result["success"], "true")
+        mock_get.assert_called_once_with(
+            f"https://api.steampowered.com/ISteamUser/GetUserGroupList/v1?steamid={id}&key={key}"
+        )
+    @patch('SteamHandler.requests.get')
+    def test_get_number_of_players_in_game(self, mock_get):
+        key = "none"
+        appid = "1172470"
+        mock_data = {
+        "response": {
+            "player_count": 95098,
+            "result": 1
+        }
+        }
+        mock_response = MagicMock()
+        mock_response.json.return_value = mock_data
+        mock_get.return_value = mock_response
+        steam = Steam(key)
+        result = steam.get_number_of_players_in_game(appid)
+        self.assertEqual(result["player_count"], 95098)
+        mock_get.assert_called_once_with(
+            f"https://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1?appid={appid}"
+        )
+    @patch('SteamHandler.requests.get')
+    def test_get_user_steam_level(self, mock_get):
+        key="none"
+        id = "76561198250039738"
+        mock_data = {
+        "response": {
+            "player_level": 12
+        }
+        }
+        mock_response = MagicMock()
+        mock_response.json.return_value = mock_data
+        mock_get.return_value = mock_response
+        steam = Steam(key)
+        result = steam.get_user_steam_level(id)
+        self.assertEqual(result["player_level"], 12)
+        mock_get.assert_called_once_with(
+            f"https://api.steampowered.com/IPlayerService/GetSteamLevel/v1?steamid={id}&key={key}"
+        )
+
+    @patch('SteamHandler.requests.get')
+    def test_get_user_badges(self, mock_get):
+        key="none"
+        appid = "1172470"
+        mock_data = {
+        "achievementpercentages": {
+            "achievements": [
+            {
+                "name": "JUMPMASTER_4",
+                "percent": 49.4000015258789
+            },
+            {
+                "name": "TEAM_PLAYER_2",
+                "percent": 41.9000015258789
+            },
+            {
+                "name": "KILL_LEADER_6",
+                "percent": 41.2000007629395
+            },
+            {
+                "name": "FULLY_KITTED_3",
+                "percent": 40.0999984741211
+            },
+            {
+                "name": "APEX_RECON_10",
+                "percent": 35.7999992370606
+            },
+            {
+                "name": "APEX_OFFENSE_7",
+                "percent": 34.7999992370606
+            },
+            {
+                "name": "APEX_SUPPORT_9",
+                "percent": 27.7000007629395
+            },
+            {
+                "name": "DECKED_OUT_1",
+                "percent": 27.2999992370605
+            },
+            {
+                "name": "THE_PLAYER_0",
+                "percent": 24.6000003814697
+            },
+            {
+                "name": "APEX_DEFENSE_8",
+                "percent": 20
+            },
+            {
+                "name": "WELL_ROUNDED_5",
+                "percent": 16.2999992370605
+            },
+            {
+                "name": "APEX_LEGEND_11",
+                "percent": 14.8000001907349
+            }
+            ]
+        }
+        }
+        mock_response = MagicMock()
+        mock_response.json.return_value = mock_data
+        mock_get.return_value = mock_response
+        steam = Steam(key)
+        result = steam.get_global_achievement_percentage(appid)
+        self.assertEqual(result["achievements"][0]["percent"], 49.4000015258789)
+        mock_get.assert_called_once_with(
+            f"http://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid={appid}&format=json"
+        )
 if __name__ == '__main__':
 
     unittest.main()
