@@ -221,15 +221,22 @@ function loaddataforgame(steamid, operation) {
     })
     .then(data => {
         let texttoset = "";
-        if (operation == 'Last_Played') {
-            let date = new Date(data.rtime_last_played);
-            texttoset = `<p>Last played on ${date}</p>`;
-        } else if (operation == 'Achievements') {
-            for (let i = 0; i < data.Achievments.playerstats.achievements.length; i++) {
-                    texttoset += `<p>${data.Achievments.playerstats.achievements[i]['displayName']} - ${data.Achievments.playerstats.achievements[i]['description']}</p>`;
+        try {
+            if (operation == 'Last_Played') {
+                let date = new Date(data.rtime_last_played * 1000);
+                console.log(date);
+                console.log(data.rtime_last_played);
+                texttoset = `<p>Last played on ${date}</p>`;
+            } else if (operation == 'Achievements') {
+                for (let i = 0; i < data.Achievments.playerstats.achievements.length; i++) {
+                        texttoset += `<p>${data.Achievments.playerstats.achievements[i]['displayName']} - ${data.Achievments.playerstats.achievements[i]['description']}</p>`;
+                }
+            } else if (operation == 'Total_Playtime') {
+                texttoset = `<p>Total Playtime: ${(data.playtime_forever/60).toFixed(2)} hours</p>`;
             }
-        } else if (operation == 'Total_Playtime') {
-            texttoset = `<p>Last played on ${(data.playtime_forever/60).toFixed(2)} hours</p>`;
+        } catch (error) {
+            console.error(error);
+            texttoset = '<p>No data to display</p>'
         }
         document.getElementById("DataBoxData").innerHTML  = texttoset;
         console.log(data)
