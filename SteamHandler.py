@@ -217,6 +217,8 @@ class Steam:
             self.db_manager.insert_user_groups(steamid, data['groups'])
             groups = self.db_manager.fetch_user_groups(steamid)
         newgroups = []
+        if 'groups' not in groups:
+            return []
         for group in groups['groups']:
             if 'gid' in group: 
                 newgroups.append(self.get_group_data(group['gid']))

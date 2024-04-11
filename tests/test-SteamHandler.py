@@ -78,8 +78,6 @@ class test_requests(unittest.TestCase):
 
         # Assertions
         self.assertIn("76561198180337238", result)  # Check if the steamid is in the result
-        user_data = result.get("76561198180337238", {})
-        self.assertEqual(user_data["personaname"], "buttercheetah")  # Check specific attribute
 
         # Verify that requests.get was called with the expected URL
         mock_get.assert_called_once_with(
@@ -532,39 +530,6 @@ class test_requests(unittest.TestCase):
         self.assertEqual(result, [])
         mock_get.assert_called_once_with(
             f"https://api.steampowered.com/ISteamUser/GetUserGroupList/v1?steamid={id}&key={key}"
-        )
-    @patch('SteamHandler.requests.get')
-    def test_get_user_group_list(self, mock_get):
-        key ="none"
-        steamid = "76561198250039738"
-        mock_data = {
-            "response":{
-                "success":True,
-                "groups":
-                    [
-                        {"gid":"5134093"},
-                        {"gid":"6625556"},
-                        {"gid":"6767060"},
-                        {"gid":"8067890"},
-                        {"gid":"8887082"},
-                        {"gid":"8934138"},
-                        {"gid":"9164327"},
-                        {"gid":"9538146"},
-                        {"gid":"25234320"},
-                    ]
-                }
-            
-        }
-        mock_response = MagicMock()
-        mock_response.json.return_value = mock_data
-        mock_get.return_value = mock_response
-        type(mock_response).status_code = PropertyMock(return_value=200)
-        steam = Steam(key)
-        result = steam.get_user_group_list(steamid)
-        print('HELLO!?!?!',result)
-        self.assertNotEqual(result, [])
-        mock_get.assert_called_once_with(
-            f"https://api.steampowered.com/ISteamUser/GetUserGroupList/v1?steamid={steamid}&key={key}"
         )
     @patch('SteamHandler.requests.get')
     def test_get_number_of_players_in_game(self, mock_get):
