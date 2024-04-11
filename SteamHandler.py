@@ -78,7 +78,10 @@ class Steam:
                 return []
             try:
                 data = response.json()  
-                self.db_manager.insert_achievements(steamid, appid, data)
+                schema_request_url = f"https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key={self.STEAM_KEY}&appid={appid}"
+                schema_response = requests.get(schema_request_url)
+                schemma = schema_response.json()
+                self.db_manager.insert_achievements(steamid, appid, data, schemma)
                 if data == self.db_manager.fetch_user_achievements(steamid, appid):
                     print("achievements success")
                 else:
@@ -263,10 +266,6 @@ class Steam:
         level = self.db_manager.fetch_user_level(steamid)
         if level == []:
             self.get_user_badges(steamid)
-            # Api call is no longer necessary, user badge info include player level
-            # Calling user_badges will use api call from their to create table
-            # response = requests.get(f"https://api.steampowered.com/IPlayerService/GetSteamLevel/v1?steamid={steamid}&key={self.STEAM_KEY}")
-            # data = response.json()['response']
             level = self.db_manager.fetch_user_level(steamid)
         return level
     

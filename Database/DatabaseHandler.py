@@ -137,6 +137,8 @@ class DatabaseManager:
                 appid INTEGER,
                 gameName TEXT,
                 apiname TEXT,
+                displayName TEXT,
+                description TEXT,
                 achieved INTEGER,
                 unlocktime INTEGER,
                 FOREIGN KEY (steamid) REFERENCES users(steamid)
@@ -388,7 +390,7 @@ class DatabaseManager:
             tmpgamedata = self.clean_game_query(result,steamid)
             tgamedata = {'game_count': len(tmpgamedata), 'games': tmpgamedata}
             gamedata = tgamedata['games'][0]
-            gamedata['Achievments'] = self.fetch_user_achievements(steamid, appid)
+            gamedata['Achievments'] = self.fetch_user_achieved_achievements(steamid, appid)
             return gamedata
         else:
             return []
@@ -465,7 +467,14 @@ class DatabaseManager:
             else:
                 return []
         
-    def insert_achievements(self, steamid, appid, achievements):
+    def insert_achievements(self, steamid, appid, achievements, schema):
+        def search_achievement_by_name(schema_achievements, name):
+            found_achievements = []
+            for schema_achievement in schema_achievements:
+                if name.lower() in schema_achievement["name"].lower():
+                    found_achievements.append(schema_achievement)
+            return found_achievements
+
         exisiting_achievemnts = self.fetch_user_achievements(steamid, appid)
         if exisiting_achievemnts != []:
             return
@@ -475,13 +484,18 @@ class DatabaseManager:
             print("game name not found!")
             return
         for achievement in achievements['playerstats']['achievements']:
+            found_achievements = search_achievement_by_name(schema['game']['availableGameStats']['achievements'], achievement['apiname'])[0]
+            print(found_achievements)
             values = [
                 steamid,
                 appid,
                 gameName,
                 achievement['apiname'],
+                found_achievements['displayName'],
+                found_achievements['description'],
                 achievement['achieved'],
-                achievement['unlocktime']
+                achievement['unlocktime'],
+
             ]
             query = '''
                 INSERT INTO Achievements (
@@ -489,9 +503,11 @@ class DatabaseManager:
                     appid,
                     gameName,
                     apiname,
+                    displayName,
+                    description,
                     achieved,
                     unlocktime
-                ) VALUES (?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             '''
             self.execute_query(query, values)
 
@@ -549,7 +565,7 @@ class DatabaseManager:
         if cache_key in self.cache['user_achievements']:
             return self.cache['user_achievements'][cache_key]
 
-        query = "SELECT gameName, apiname, achieved, unlocktime \
+        query = "SELECT gameName, apiname AS name, displayName, achieved, unlocktime \
             FROM Achievements WHERE steamid = ? AND appid = ?"
         conn = sqlite3.connect(self.database)
         conn.row_factory = sqlite3.Row
@@ -582,7 +598,7 @@ class DatabaseManager:
         if cache_key in self.cache['user_achieved_achievements']:
             return self.cache['user_achieved_achievements'][cache_key]
 
-        query = "SELECT gameName, apiname AS name, achieved \
+        query = "SELECT gameName, apiname AS name, description, displayName, achieved \
             FROM Achievements WHERE steamid = ? AND appid = ? AND achieved = 1"
         conn = sqlite3.connect(self.database)
         conn.row_factory = sqlite3.Row
@@ -672,17 +688,16 @@ class DatabaseManager:
         if steamid in self.cache['user_level']:
             return self.cache['user_level'][steamid]
         
-        query = "SELECT player_level FROM UserLevel WHERE steamid = ?"
+        query = "SELECT player_xp,player_level,player_xp_needed_to_level_up,player_xp_needed_current_level FROM UserLevel WHERE steamid = ?"
         conn = sqlite3.connect(self.database)
+        conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         cursor.execute(query, (steamid,))
-        results = cursor.fetchall()
+        results = cursor.fetchone()
         conn.close()
-        
         if results:
-            level = [result[0] for result in results]
-            level = level[0]
-            self.cache['user_level'][steamid] = {'player_level': level}
+            results = dict(results)
+            self.cache['user_level'][steamid] = results
             return self.cache['user_level'][steamid]
         else:
             return []

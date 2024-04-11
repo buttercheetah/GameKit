@@ -69,7 +69,7 @@ def user(steamid):
     #Steam.get_user_stats_for_game(steamid, 1086940)
     #Steam.get_user_steam_level(steamid)
     #Steam.get_user_badges(steamid)
-    return render_template("User_Page.html", user=Steam.get_user_summeries([steamid])[steamid], steamid = steamid)
+    return render_template("User_Page.html", user=Steam.get_user_summeries([steamid])[steamid], userlevel=Steam.get_user_steam_level(steamid), steamid = steamid)
 @app.route('/user/<steamid>/friends')
 def friend_list(steamid):
     friends = Steam.get_user_friend_list(steamid)
@@ -122,7 +122,8 @@ def achievments_api():
             response.append(appachievment)
             #print(appachievment,'\n\n\n')
         return {'Response':response}
-    except:
+    except Exception:
+        traceback.print_exc()
         return Response(
         "Data is Private",
         status=401,

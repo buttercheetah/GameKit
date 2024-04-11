@@ -15,7 +15,7 @@ async function loadFriends(usteamid) {
         let i = 0;
         for (const steamid in data) {
             i++;
-            if (i === 10) { break; }
+            if (i === 9) { break; }
             if (data.hasOwnProperty(steamid)) {
                 const friend = data[steamid];
                 // Log or display the formatted output (avatar - personaname)
@@ -158,11 +158,12 @@ async function loadGames(usteamid) {
             for (let i = 0; i < Math.min(responseData.length, 5); i++) {
                 let achievement = responseData[i].playerstats.achievements[0];
                 let gameName = responseData[i].gameName; // Accessing gameName property here
+                let displayName = achievement.displayName; // Accessing gameName property here
                 let apiname = achievement.apiname;
                 let unlocktime = new Date(achievement.unlocktime * 1000).toLocaleDateString(); // Converting Unix timestamp to readable date
             
                 let li = document.createElement('li');
-                li.textContent = `${gameName} - ${apiname} - ${unlocktime}`;
+                li.textContent = `${gameName} - ${displayName} - ${unlocktime}`;
                 ol.appendChild(li);
             }
 
@@ -206,10 +207,8 @@ function myFunction() {
 function selectgame(appid,appname,steamid) {
     document.getElementById("GameSelection").innerHTML = appname;
     appidselection = appid;
-    loaddataforgame(steamid);
 }
-function loaddataforgame(steamid) {
-    let operation = document.getElementById("DataSelection").value
+function loaddataforgame(steamid, operation) {
     console.log(appidselection)
     const apiUrl = `/api/game_data?appid=${appidselection}&steamid=${steamid}`;
     fetch(apiUrl)
@@ -224,10 +223,15 @@ function loaddataforgame(steamid) {
         let texttoset = "";
         if (operation == 'Last_Played') {
             let date = new Date(data.rtime_last_played);
-            texttoset = `Last played on ${date}`
+            texttoset = `<p>Last played on ${date}</p>`;
+        } else if (operation == 'Achievements') {
+            for (let i = 0; i < data.Achievments.playerstats.achievements.length; i++) {
+                    texttoset += `<p>${data.Achievments.playerstats.achievements[i]['displayName']} - ${data.Achievments.playerstats.achievements[i]['description']}</p>`;
+            }
+        } else if (operation == 'Total_Playtime') {
+            texttoset = `<p>Last played on ${(data.playtime_forever/60).toFixed(2)} hours</p>`;
         }
-
-        document.getElementById("DataBoxData").innerText  = texttoset;
+        document.getElementById("DataBoxData").innerHTML  = texttoset;
         console.log(data)
     })
     .catch(error => {
