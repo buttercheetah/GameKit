@@ -128,11 +128,24 @@ def achievments_api():
         status=401,
     )
 @app.route("/api/games")
-def friend_api():
+def games_api():
     try:
         steamid = request.args.get('steamid')
         return Steam.get_user_owned_games(steamid)
-    except:
+    except Exception:
+        traceback.print_exc()
+        return Response(
+        "Data is Private",
+        status=401,
+    )
+@app.route("/api/game_data")
+def game_data_api():
+    try:
+        appid = request.args.get('appid')
+        steamid = request.args.get('steamid')
+        return Steam.db_manager.fetch_specif_game_data(appid=appid,steamid=steamid)
+    except Exception:
+        traceback.print_exc()
         return Response(
         "Data is Private",
         status=401,

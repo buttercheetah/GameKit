@@ -85,13 +85,14 @@ async function loadGames(usteamid) {
         return response.json();
     })
     .then(data => {
+        console.log(data)
         data.games.sort((a, b) => a.name.localeCompare(b.name));
         let gamelist = "";
         for (let i = 0; i < data.games.length; i++) {
             const game = data.games[i];
             //console.log(game);
             //console.log(`http://media.steampowered.com/steamcommunity/public/images/apps/${game.appid}/${game.img_icon_url}.jpg - ${game.name} - ${game.playtime_forever}`);
-            gamelist += `<a onclick="selectgame('${game.appid}','${game.name}')">${game.name}</a>`;
+            gamelist += `<a onclick="selectgame('${game.appid}','${game.name}','${usteamid}')">${game.name}</a>`;
         }
         document.getElementById("gamedropdown-list").innerHTML = gamelist;
         // Iterate over each friend in the response
@@ -202,10 +203,35 @@ function myFunction() {
       }
     }
   }
-function selectgame(appid,appname) {
+function selectgame(appid,appname,steamid) {
     document.getElementById("GameSelection").innerHTML = appname;
-    //console.log(appid);
-    //console.log(appname);
     appidselection = appid;
+    loaddataforgame(steamid);
+}
+function loaddataforgame(steamid) {
+    let operation = document.getElementById("DataSelection").value
+    console.log(appidselection)
+    const apiUrl = `/api/game_data?appid=${appidselection}&steamid=${steamid}`;
+    fetch(apiUrl)
+    .then(response => {
+        if (!response.ok) {
+        document.getElementById("friends_list").innerHTML = `<p>Private</p>`;
+        throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        let texttoset = "";
+        if (operation == 'Last_Played') {
+            let date = new Date(data.rtime_last_played);
+            texttoset = `Last played on ${date}`
+        }
+
+        document.getElementById("DataBoxData").innerText  = texttoset;
+        console.log(data)
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }
 let appidselection = 0;

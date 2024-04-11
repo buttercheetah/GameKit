@@ -14,9 +14,7 @@ This file is just for refrence, actual website is barebones with js to fill in d
 			window.addEventListener('load', function () {
 				loadFriends("{{ user['steamid'] }}");
 				loadGroups("{{ user['steamid'] }}");
-
-
-				// LoadGames should be the last as it takes the longest to load data.
+				// LoadGames should be the last as it takes the longest to load data, but these are async so it doesnt actually make a difference
 				loadGames("{{ user['steamid'] }}");
 			})
 
@@ -107,7 +105,7 @@ This file is just for refrence, actual website is barebones with js to fill in d
 				</div>
 				<div class="rightdivision">
 					<label for="DataSelection">What Data Are You Looking For?</label>
-					<select id="DataSelection" name="DataSelection">
+					<select id="DataSelection" name="DataSelection" onchange='loaddataforgame(`{{ user["steamid"] }}`)'>
 						<option value="Last_Played">Last Played</option>
 						<option value="Total_Achievements">Total Achievements</option>
 						<option value="Total_Playtime">Total Playtime</option>
@@ -117,7 +115,7 @@ This file is just for refrence, actual website is barebones with js to fill in d
 				</div>
 				<div class="databox">
 					<div class="box">
-						<p class="datahere">Data here</p>
+						<p class="datahere" id="DataBoxData">Select Game!</p>
 					</div> 
 				</div>
 				</div>

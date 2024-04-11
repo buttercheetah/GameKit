@@ -325,6 +325,36 @@ class DatabaseManager:
             '''
             self.execute_query(query, values)
                 
+    def clean_game_query(self,result,steamid):
+        games_data = []
+        for row in result:
+            game = dict(row)
+            if game.get('content_descriptorids') == '':
+                game.pop('content_descriptorids')
+            else:   
+                content_descrip = game.get('content_descriptorids')
+                integer_list = [int(x) for x in content_descrip.split(',')]
+                game.update({'content_descriptorids': integer_list})
+            
+            if game.get('playtime_2weeks') == 0:
+                game.pop('playtime_2weeks')
+            
+            if game.get('has_community_visible_stats') == 0:
+                game.pop('has_community_visible_stats')
+            else:
+                game.update({'has_community_visible_stats': True})
+            
+            if game.get('has_leaderboards') == 0:
+                game.pop('has_leaderboards')
+            else:
+                game.update({'has_leaderboards': True})
+            
+            game.pop('id')
+            game.pop('steamid')
+            games_data.append(game)
+        
+        return games_data
+
     def fetch_user_owned_games(self, steamid):
         if steamid in self.cache['user_games']:
             return self.cache['user_games'][steamid]
@@ -337,38 +367,33 @@ class DatabaseManager:
         result = cursor.fetchall()
         conn.close()
 
-        games_data = []
         if result:
-            for row in result:
-                game = dict(row)
-                if game.get('content_descriptorids') == '':
-                    game.pop('content_descriptorids')
-                else:   
-                    content_descrip = game.get('content_descriptorids')
-                    integer_list = [int(x) for x in content_descrip.split(',')]
-                    game.update({'content_descriptorids': integer_list})
-                
-                if game.get('playtime_2weeks') == 0:
-                    game.pop('playtime_2weeks')
-                
-                if game.get('has_community_visible_stats') == 0:
-                    game.pop('has_community_visible_stats')
-                else:
-                    game.update({'has_community_visible_stats': True})
-                
-                if game.get('has_leaderboards') == 0:
-                    game.pop('has_leaderboards')
-                else:
-                    game.update({'has_leaderboards': True})
-                
-                game.pop('id')
-                game.pop('steamid')
-                games_data.append(game)
-
-            self.cache['user_games'][steamid] = {'game_count': len(games_data), 'games': games_data}
+            data = self.clean_game_query(result,steamid)
+            self.cache['user_games'][steamid] = {'game_count': len(data), 'games': data}
             return self.cache['user_games'][steamid]
         else:
             return []
+    
+    def fetch_specif_game_data(self, steamid, appid):
+        query = "SELECT * FROM UserGames WHERE steamid = ? and appid = ?"
+        conn = sqlite3.connect(self.database)
+        conn.row_factory = sqlite3.Row  # Set row factory to return rows as dictionaries
+        cursor = conn.cursor()
+        cursor.execute(query, (steamid,appid))
+        result = cursor.fetchall()
+        conn.close()
+
+        games_data = []
+        if result:
+            tmpgamedata = self.clean_game_query(result,steamid)
+            tgamedata = {'game_count': len(tmpgamedata), 'games': tmpgamedata}
+            gamedata = tgamedata['games'][0]
+            gamedata['Achievments'] = self.fetch_user_achievements(steamid, appid)
+            return gamedata
+        else:
+            return []
+    
+
 
     def fetch_recently_played_games(self, steamid, count):
         if steamid in self.cache['recently_played']:
