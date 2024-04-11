@@ -199,6 +199,11 @@ def clear_achievement_percentages_table():
 def clear_achievements_table():
     Steam.db_manager.clear_achievements_table()
 
+
+@app.errorhandler(404) 
+def not_found(e): 
+  return render_template("Error Page.html") 
+
 if __name__ == '__main__':
     scheduler.init_app(app)
     scheduler.start()  
