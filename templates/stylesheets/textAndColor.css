@@ -99,6 +99,10 @@ img {
 	height: 100%;
 }
 
+#errorText {
+	padding-bottom: 20px;
+}
+
 footer {
     text-align: center;
     color: #4e697d;

@@ -7,13 +7,13 @@ This file is just for refrence, no API endpoint for developer account exists.
 	 <link href="../stylesheets/webstyle1.css" rel="stylesheet" type="text/css">
 	 <meta charset="utf-8" />
 	 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	 
-	 <title>wireframe3</title>
+	 <!-- originally named wirefame3 -->
+	 <title>User Page Dev</title>
 	</head>	
 	
 	<body>
 		<nav>
-			<div class="logo"><img src="../GK_logo.png" alt="GameKit Logo"></div>
+			<div class="logo"><img src="../images/GK_logo.png" alt="GameKit Logo"></div>
 			<div class="navbar">
 			  <a href="User_Page_Wireframe.html">Your Profile</a>
 			  <div class="dropdown">
@@ -33,7 +33,7 @@ This file is just for refrence, no API endpoint for developer account exists.
 			<main>
 			<div class="user">
 				<div class="userdetails">
-					<p><div class="pfp"><img id="img2" src="../dodgePFP.jpg" alt="User's Profile Pic"></div></p>
+					<p><div class="pfp"><img id="img2" src="../images/dodgePFP.jpg" alt="User's Profile Pic"></div></p>
 					<div class="name-bio">
 						<h1>Dev123</h1>
 						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
@@ -51,24 +51,36 @@ This file is just for refrence, no API endpoint for developer account exists.
 				<div class="GameQuery">
 				<h1 class="userdatasearch">User Data Search</h1>
 				<div class="leftdivision">
-					<label for="GameSelection">Game Selection</label>
-					<select id="GameSelection" name="GameSelection">
-					  <option value="Fallout 3">Fallout 3</option>
-						<option value="The Elder Scrolls">The Elder Scrolls</option>
-						<option value="Victoria II">Victoria II</option>
-						<option value="Game_Example_4">Game_Example_4</option>
-						<option value="Game_Example_5">Game_Example_5</option>
-					</select>
+					<div class="dropdown">
+						<button onclick="myFunction()" id="GameSelection"class="dropbtn2">Game Title</button>
+						<div id="myDropdown" class="dropdown-content">
+						  <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
+						  <div id="gamedropdown-list">
+							<a href="#Fallout3">Fallout 3</a>
+							<a href="#TheElderScrolls">The Elder Scrolls</a>
+							<a href="#VictoriaII">Victoria II</a>
+							<a href="#example_4">example_4</a>
+							<a href="#example_5">example_5</a>
+							<a href="#example_6">example_6</a>
+						  </div>
+						</div>
+					</div>
 				</div>
 				<div class="rightdivision">
-					<label for="DataSelection">What Data Are You Looking For?</label>
-					<select id="DataSelection" name="DataSelection">
-						<option value="Last_Played">Last Played</option>
-						<option value="Total_Achievements">Total Achievements</option>
-						<option value="Total_Playtime">Total Playtime</option>
-						<option value="Data_Example_4">Data_Example_4</option>
-						<option value="Data_Example_5">Data_Example_5</option>
-					</select>
+					<div class="dropdown">
+						<button onclick="myFunction()" id="GameSelection"class="dropbtn2">What Data Are You Looking For?</button>
+						<div id="myDropdown" class="dropdown-content">
+						  <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
+						  <div id="gamedropdown-list">
+							<a href="#totalplaytime">Total Playtime</a>
+							<a href="#totalachievements">Total Achievements</a>
+							<a href="#winrate">Win Rate</a>
+							<a href="#example_4">example_4</a>
+							<a href="#example_5">example_5</a>
+							<a href="#example_6">example_6</a>
+						  </div>
+						</div>
+					</div>
 				</div>
 				<div class="databox">
 					<div class="box">
@@ -79,7 +91,7 @@ This file is just for refrence, no API endpoint for developer account exists.
 			</div>
 			<div class="friends-game-library">
 				<div class="friends-list">
-					<h1 class="centerText">Friends List</h1>
+					<h1 class="centerText">Recently Online Friends</h1>
 					<div>
 					 <ul>
 					  <li>Friend 1</li>
