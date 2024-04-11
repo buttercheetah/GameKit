@@ -79,6 +79,7 @@ navbar {
 
 .row {
   padding-left: 3%;
+
 }
 
 .column1 {
@@ -264,6 +265,13 @@ ol, ul {
   min-width: 100px;
   height:auto;
 }
+
+
+footer {
+  padding-top: 10%;
+  float: inline;
+  text-align: center;
+  color: #4e697d;
 
 #img2 {
   max-width: 100%;
