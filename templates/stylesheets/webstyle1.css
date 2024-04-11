@@ -177,7 +177,7 @@ main {
 
 .box{ 
     width: 95%; 
-    height: 200px; 
+    height: auto; 
     border: 2px #E8E8E8; 
 	background: #d9d9d9;
 } 
