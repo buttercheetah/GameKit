@@ -485,14 +485,14 @@ class DatabaseManager:
             return
         for achievement in achievements['playerstats']['achievements']:
             found_achievements = search_achievement_by_name(schema['game']['availableGameStats']['achievements'], achievement['apiname'])[0]
-            print(found_achievements)
+            #print(found_achievements)
             values = [
                 steamid,
                 appid,
                 gameName,
                 achievement['apiname'],
                 found_achievements['displayName'],
-                found_achievements['description'],
+                found_achievements['description'] if 'description' in found_achievements else 'Achievement description is hidden',
                 achievement['achieved'],
                 achievement['unlocktime'],
 
@@ -565,7 +565,7 @@ class DatabaseManager:
         if cache_key in self.cache['user_achievements']:
             return self.cache['user_achievements'][cache_key]
 
-        query = "SELECT gameName, apiname AS name, displayName, achieved, unlocktime \
+        query = "SELECT gameName, apiname AS name, description, displayName, achieved, unlocktime \
             FROM Achievements WHERE steamid = ? AND appid = ?"
         conn = sqlite3.connect(self.database)
         conn.row_factory = sqlite3.Row
@@ -598,7 +598,7 @@ class DatabaseManager:
         if cache_key in self.cache['user_achieved_achievements']:
             return self.cache['user_achieved_achievements'][cache_key]
 
-        query = "SELECT gameName, apiname AS name, description, displayName, achieved \
+        query = "SELECT gameName, apiname AS name, description, displayName, achieved, unlocktime \
             FROM Achievements WHERE steamid = ? AND appid = ? AND achieved = 1"
         conn = sqlite3.connect(self.database)
         conn.row_factory = sqlite3.Row

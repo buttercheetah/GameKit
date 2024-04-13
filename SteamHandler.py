@@ -82,10 +82,6 @@ class Steam:
                 schema_response = requests.get(schema_request_url)
                 schemma = schema_response.json()
                 self.db_manager.insert_achievements(steamid, appid, data, schemma)
-                if data == self.db_manager.fetch_user_achievements(steamid, appid):
-                    print("achievements success")
-                else:
-                    print("failure achievements")
             except KeyError:
                 return "Profile is not public"
             achievements = self.db_manager.fetch_user_achievements(steamid, appid)
@@ -233,7 +229,7 @@ class Steam:
         if type(groupids) != list:
             groupids = [groupids]
         for groupid in groupids:
-            print('obtaining groupdata for', groupid)
+            #print('obtaining groupdata for', groupid)
             db_result = self.db_manager.fetch_group(groupid)
             if db_result != []:
                 totalresponse.append({groupid:db_result})
