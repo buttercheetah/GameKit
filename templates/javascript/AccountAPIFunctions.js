@@ -118,7 +118,7 @@ async function loadGames(usteamid) {
         document.getElementById("most_played_games").innerHTML += `</ol>`;
 
         const topsortedGames = data['games']
-        .sort((a, b) => b.playtime_forever - a.playtime_forever)
+        .sort((a, b) => b.rtime_last_played - a.rtime_last_played)
         .slice(0, 50)
         .map(game => game.appid)
         .join(',');
@@ -129,7 +129,7 @@ async function loadGames(usteamid) {
         fetch(apiUrl)
         .then(response => {
             if (!response.ok) {
-            document.getElementById("friends_list").innerHTML = `<p>Private</p>`;
+            document.getElementById("newest_achievement").innerHTML = `<p>Private</p>`;
             throw new Error(`HTTP error! Status: ${response.status}`);
             }
             return response.json();
