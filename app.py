@@ -77,7 +77,7 @@ def submit_contact_request():
     subject = request.args.get('subject')
     info = request.args.get('info')
     print(name,steamid,subject,info)
-    # Do stuff with the information
+    Steam.db_manager.insert_contact_us(steamid, name, subject, info)
     return redirect(f"/")
 
 
@@ -202,9 +202,9 @@ def clear_users_table():
 def clear_friends_table():
     Steam.db_manager.clear_friends_table()
 
-@scheduler.task('interval', id='clear_friends_table', days=7)
+@scheduler.task('interval', id='clear_SteamGroupData_table', days=7)
 def clear_SteamGroupData():
-    Steam.db_manager.clear_SteamGroupData()
+    Steam.db_manager.clear_SteamGroupData_table()
     
 @scheduler.task('interval', id='clear_user_games_table', days=2)
 def clear_user_games_table():
