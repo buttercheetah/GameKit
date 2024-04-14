@@ -146,6 +146,17 @@ class DatabaseManager:
             )
         ''')
         
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS ContactUs (
+                id INTEGER PRIMARY KEY,
+                steamid TEXT,
+                name TEXT,
+                subject TEXT,
+                info TEXT,
+                FOREIGN KEY (steamid) REFERENCES users(steamid)
+            )
+        ''')
+        
         conn.commit()
         conn.close()
        
@@ -740,6 +751,14 @@ class DatabaseManager:
         else:
             return []
         
+    def insert_contact_us(self, steamid, name, subject, info):
+        query = ''' 
+            INSERT INTO ContactUS (steamid, name, subject, info)
+            VALUES (?, ?, ?, ?)
+            '''
+        values = (steamid, name, subject, info)
+        self.execute_query(query, values)
+        
     def clear_users_table(self):
         conn = sqlite3.connect(self.database)
         cursor = conn.cursor()
@@ -756,7 +775,7 @@ class DatabaseManager:
         conn.commit()
         conn.close()
 
-    def clear_SteamGroupData(self):
+    def clear_SteamGroupData_table(self):
         conn = sqlite3.connect(self.database)
         cursor = conn.cursor()
         query = "DELETE FROM SteamGroupData"
@@ -811,11 +830,19 @@ class DatabaseManager:
         cursor.execute(query)
         conn.commit()
         conn.close()
+    
+    def clear_contactUs_table(self):
+        conn = sqlite3.connect(self.database)
+        cursor = conn.cursor()
+        query = "DELETE FROM ContactUs"
+        cursor.execute(query)
+        conn.commit()
+        conn.close()
 
     def clear_all_tables(self):
         self.clear_users_table()
         self.clear_friends_table()
-        self.clear_SteamGroupData()
+        self.clear_SteamGroupData_table()
         self.clear_user_games_table()
         self.clear_user_groups_table()
         self.clear_user_level_table()
@@ -828,6 +855,7 @@ class DatabaseManager:
         self.clear_user_groups_table()
         self.clear_user_level_table()
         self.clear_badges_table()
+        self.clear_contactUs_table()
         
     def clear_cache(self):
         print("Clearing Cache")
