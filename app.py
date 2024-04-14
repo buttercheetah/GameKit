@@ -46,19 +46,21 @@ def authorize():
     return render_template("steam_login_receive_redirect.html",redirect_url=f"{web_url}/user/{user_id}",user_id=user_id)
 
 # Route for search functionality
-@app.route("/search/")
-def search():
-    search_query = request.args.get('search')
-    search_type = request.args.get('type')
-    if str(search_query).isnumeric():
-        return redirect(f"{web_url}/user/{search_query}")
-    else:
-        vanitysearch = Steam.resolve_vanity_url(search_query)
-        if vanitysearch['success'] == True:
-            return redirect(f"{web_url}/user/{vanitysearch['steamid']}")
+@app.route("/api/search/")
+def apisearch():
+    try:
+        search_query = request.args.get('search')
+        search_type = request.args.get('type')
+        if str(search_query).isnumeric():
+            return redirect(f"{web_url}/user/{search_query}")
         else:
-            return Response(404)
-
+            vanitysearch = Steam.resolve_vanity_url(search_query)
+            if vanitysearch['success'] == True:
+                return redirect(f"{web_url}/user/{vanitysearch['steamid']}")
+            else:
+                return redirect(f"/search")
+    except:
+        return redirect(f"/search")
 # Route for user login
 @app.route('/login')
 def login():
