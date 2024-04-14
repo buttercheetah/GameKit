@@ -246,6 +246,7 @@ function loaddataforgame(steamid, operation) {
         return response.json();
     })
     .then(data => {
+        console.log(data)
         let texttoset = "";
         try {
             if (operation == 'Last_Played') {
@@ -257,6 +258,12 @@ function loaddataforgame(steamid, operation) {
                 }
             } else if (operation == 'Total_Playtime') {
                 texttoset = `<p>Total Playtime: ${(data.playtime_forever/60).toFixed(2)} hours</p>`;
+            } else if (operation == 'AppNews') {
+                for (let i = 0; i < data.appnews.newsitems.length; i++) {
+                    texttoset += `<h3>${data.appnews.newsitems[i]['title']}</h3>`;
+                    texttoset += `<br>`;
+                    texttoset += `<p>${data.appnews.newsitems[i]['contents']}</p>`;
+                }
             }
         } catch (error) {
             console.error(error);

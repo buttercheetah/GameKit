@@ -132,7 +132,7 @@ class Steam:
         return response.json()["response"]
 
     # Game API Calls
-    def get_app_news(self, appid,count=3,maxlength=300):
+    def get_app_news(self, appid,count=3,maxlength=9000):
         response = requests.get(f"http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid={appid}&count={count}&maxlength={maxlength}&format=json")
         # data = response.json()['response']
         if response.status_code not in range(200,299):
