@@ -69,6 +69,18 @@ def login():
 def user(steamid):
     return render_template("User_Page.html", user=Steam.get_user_summeries([steamid])[steamid], userlevel=Steam.get_user_steam_level(steamid), steamid = steamid)
 
+# Route for contact us handling
+@app.route('/submit_contact_request')
+def submit_contact_request():
+    name = request.args.get('name')
+    steamid = request.args.get('steamid')
+    subject = request.args.get('subject')
+    info = request.args.get('info')
+    print(name,steamid,subject,info)
+    # Do stuff with the information
+    return redirect(f"/")
+
+
 # Route for user's friends list
 @app.route('/user/<steamid>/friends')
 def friend_list(steamid):
