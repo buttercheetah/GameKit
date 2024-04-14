@@ -457,7 +457,7 @@ class test_requests(unittest.TestCase):
     @patch('SteamHandler.requests.get')
     def test_get_app_news(self, mock_get):
         key = "none"
-        maxlength = 300
+        maxlength = 9000
         count = 3
         appid = "1172470"
         mock_data = {
