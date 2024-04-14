@@ -183,6 +183,10 @@ def clear_users_table():
 def clear_friends_table():
     Steam.db_manager.clear_friends_table()
 
+@scheduler.task('interval', id='clear_friends_table', days=7)
+def clear_SteamGroupData():
+    Steam.db_manager.clear_SteamGroupData()
+    
 @scheduler.task('interval', id='clear_user_games_table', days=2)
 def clear_user_games_table():
     Steam.db_manager.clear_user_games_table()

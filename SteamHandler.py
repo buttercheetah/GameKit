@@ -7,21 +7,9 @@ import xmltodict
 class Steam:
     def __init__(self, key):
         self.STEAM_KEY = key
-        self.cache = {
-            #'user_summeries': {},
-            #'user_friend_list': {},
-            #'user_achievements_per_game': {},
-            #'user_stats_for_game': {},
-            #'user_owned_games': {},
-            #'user_recently_played': {},
-            #'game_global_achievement': {},
-            'user_inventory': {}, # will need to be addressed 
-            #'user_groups': {},
-            #'user_level': {},
-            #'user_badges': {} # to be implemented
-        }
         self.db_manager = Database.DatabaseManager('db/database.db')
         self.db_manager.create_tables()
+    
     # OpenID
     def get_openid_url(self,web_url):
         steam_openid_url = 'https://steamcommunity.com/openid/login'
@@ -53,7 +41,7 @@ class Steam:
             
         # Retrieve data from cache for all steamids
         for steamid in steamids:
-            result[steamid] = self.db_manager.fetch_user(steamid)
+            result[steamid] = self.db_manager.fetch_user_summaries(steamid)
         
         return result
 
@@ -62,7 +50,6 @@ class Steam:
         if friend_ids == []:
             response = requests.get(f"http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key={self.STEAM_KEY}&steamid={steamid}&relationship=friend")
             if not "friendslist" in response.json():
-                #print(response.json(), "Error getting friends data")
                 return False
             friend_ids = [i['steamid'] for i in response.json()["friendslist"]["friends"]]
             self.db_manager.insert_friend_list(steamid, friend_ids)
@@ -91,10 +78,7 @@ class Steam:
 
     def get_user_stats_for_game(self, steamid ,appid):
         stats_for_game = self.db_manager.fetch_user_achieved_achievements(steamid, appid)
-        stats_for_game = []
         if stats_for_game == []:
-            # this api call may no longer be necessary as data is similar to user achievements beside not displaying
-            # unlock time, some name changes, and some other information that I can leave out from a fetch call
             response = requests.get(f"http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid={appid}&key={self.STEAM_KEY}&steamid={steamid}")
             if response.status_code not in range(200,299):
                 return []
@@ -127,9 +111,6 @@ class Steam:
         if recently_played == []:
             self.get_user_owned_games(steamid)
             recently_played = self.db_manager.fetch_recently_played_games(steamid, count)
-        # api call is no longer need, can retrieve same data from database user games table
-        # response = requests.get(f"http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key={self.STEAM_KEY}&steamid={steamid}&count={count}&format=json")
-        # data = response.json()['response']
         return recently_played
 
     def get_global_achievement_percentage(self, appid):
@@ -141,10 +122,6 @@ class Steam:
             data = response.json()
             self.db_manager.insert_global_achievements(appid, data)
             global_percentage = self.db_manager.fetch_achievement_percentages(appid)
-            if data == global_percentage:
-                print("success global percentage")
-            else:
-                print("failure global")
         return global_percentage
     
     def resolve_vanity_url(self, vanityurl):
@@ -154,33 +131,7 @@ class Steam:
                 return 0
         return response.json()["response"]
 
-    
-    # This function should be removed, there doesnt seem to be documentation on this
-    # def get_app_details(self, appids):
-    #     result = {}
-
-    #     # Identify which steamids are not in the cache
-    #     not_cached_appids = [appid for appid in appids if appid not in self.cache['app_details']]
-
-    #     if not_cached_appids:
-    #         # Make one request for all not cached steamids
-    #         response = requests.get(f"http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={self.STEAM_KEY}&steamids={','.join(not_cached_appids)}")
-    #         data = response.json()
-
-    #         # Update the cache with the new data
-    #         for app in data:
-    #                 if app['success']:
-    #                     self.cache['app_details'][app['data']["steam_appid"]] = app
-
-    #     # Retrieve data from cache for all steamids
-    #     for app in appids:
-    #         result[app] = self.cache['app_details'][app]
-
-    #     print(result)
-    #     return result
-
     # Game API Calls
-    # Removed caching for app news
     def get_app_news(self, appid,count=3,maxlength=300):
         response = requests.get(f"http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid={appid}&count={count}&maxlength={maxlength}&format=json")
         # data = response.json()['response']
@@ -191,17 +142,16 @@ class Steam:
 
     # This function has some sort of bug
     def get_user_inventory(self, steamid, appid):
-        # if appid in self.cache['user_inventory']:
-        #     return self.cache['user_inventory'][steamid]
-        
-        response = requests.get(f"https://steamcommunity.com/inventory/{steamid}/{appid}/2")
-        if response.status_code not in range(200,299):
+        inventory = self.db_manager.fetch_user_inventory_cache(steamid, appid)
+        if inventory == []:
+            response = requests.get(f"https://steamcommunity.com/inventory/{steamid}/{appid}/2")
+            if response.status_code not in range(200,299):
                 return []
-        data = response.json()
-        #data = response.json()['response']
-        self.cache['user_inventory'][steamid] = data
-        #print(data)
-        return data
+            data = response.json()
+            #data = response.json()['response']
+            self.db_manager.cache_user_inventory(steamid, data)
+            inventory = self.db_manager.fetch_user_inventory_cache(steamid, appid)
+        return inventory
 
     def get_user_group_list(self, steamid):
         groups = self.db_manager.fetch_user_groups(steamid)
@@ -283,8 +233,4 @@ class Steam:
             user_badges = self.db_manager.fetch_user_badges(steamid)
         return user_badges
 
-    def clear_cache(self):
-        for cache_key in self.cache:
-            self.cache[cache_key] = {}
-            
             

@@ -13,7 +13,8 @@ class DatabaseManager:
             'user_groups': {},
             'game_global_achievement': {},
             'user_level': {},
-            'user_badges': {}
+            'user_badges': {},
+            'user_inventory': {}
             }
 
     def create_tables(self):
@@ -154,7 +155,6 @@ class DatabaseManager:
         cursor.execute(query, values)
         conn.commit()
         conn.close()
-    
 
     def insert_user_summary(self, reponse):
         for data in reponse["response"]["players"]:
@@ -237,7 +237,7 @@ class DatabaseManager:
         else:
             return []
 
-    def fetch_user(self, steamid):
+
         if steamid in self.cache['user_summaries']:
             return self.cache['user_summaries'][steamid]
 
@@ -291,10 +291,10 @@ class DatabaseManager:
             values = [
                 steamid,
                 game['appid'],
-                game['name'],
+                game['name'] if 'name' in game else '',
                 game['playtime_2weeks'] if 'playtime_2weeks' in game else 0,
                 game['playtime_forever'] if 'playtime_forever' in game else 0,
-                game['img_icon_url'],
+                game['img_icon_url'] if 'img_icon_url' in game else '',
                 game['has_community_visible_stats'] if 'has_community_visible_stats' in game else False,
                 game['playtime_windows_forever'] if 'playtime_windows_forever' in game else 0,
                 game['playtime_mac_forever'] if 'playtime_mac_forever' in game else 0,
@@ -363,7 +363,7 @@ class DatabaseManager:
 
         query = "SELECT * FROM UserGames WHERE steamid = ?"
         conn = sqlite3.connect(self.database)
-        conn.row_factory = sqlite3.Row  # Set row factory to return rows as dictionaries
+        conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         cursor.execute(query, (steamid,))
         result = cursor.fetchall()
@@ -379,7 +379,7 @@ class DatabaseManager:
     def fetch_specif_game_data(self, steamid, appid):
         query = "SELECT * FROM UserGames WHERE steamid = ? and appid = ?"
         conn = sqlite3.connect(self.database)
-        conn.row_factory = sqlite3.Row  # Set row factory to return rows as dictionaries
+        conn.row_factory = sqlite3.Row 
         cursor = conn.cursor()
         cursor.execute(query, (steamid,appid))
         result = cursor.fetchall()
@@ -395,15 +395,13 @@ class DatabaseManager:
         else:
             return []
     
-
-
     def fetch_recently_played_games(self, steamid, count):
         if steamid in self.cache['recently_played']:
             return self.cache['recently_played'][steamid]
 
         query = "SELECT * FROM UserGames WHERE steamid = ? AND playtime_2weeks != 0 ORDER BY playtime_2weeks DESC"
         conn = sqlite3.connect(self.database)
-        conn.row_factory = sqlite3.Row  # Set row factory to return rows as dictionaries
+        conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         cursor.execute(query, (steamid,))
         result = cursor.fetchall()
@@ -485,7 +483,6 @@ class DatabaseManager:
             return
         for achievement in achievements['playerstats']['achievements']:
             found_achievements = search_achievement_by_name(schema['game']['availableGameStats']['achievements'], achievement['apiname'])[0]
-            #print(found_achievements)
             values = [
                 steamid,
                 appid,
@@ -510,7 +507,6 @@ class DatabaseManager:
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             '''
             self.execute_query(query, values)
-
 
     # Groups do not return value in json, so there is no need to follow a specific return format
     def fetch_group(self, groupid):
@@ -556,9 +552,6 @@ class DatabaseManager:
             ) VALUES (?, ?, ?, ?, ?, ?, ?)
         '''
         self.execute_query(query, values)
-
-
-          
         
     def fetch_user_achievements(self, steamid, appid):
         cache_key = f"achievements_{steamid}_{appid}"
@@ -666,10 +659,10 @@ class DatabaseManager:
 
         values = [
             steamid, 
-            data['player_xp'],
-            data['player_level'],
-            data['player_xp_needed_to_level_up'],
-            data['player_xp_needed_current_level']
+            data['player_xp'] if 'player_xp' in data else 0,
+            data['player_level'] if 'player_level' in data else 0,
+            data['player_xp_needed_to_level_up'] if 'player_xp_needed_to_level_up' in data else 0,
+            data['player_xp_needed_current_level'] if 'player_xp_needed_current_level' in data else 0
             ]
         
         query = '''
@@ -757,7 +750,16 @@ class DatabaseManager:
             return self.cache['user_badges'][steamid]
         else:
             return []
-
+    
+    def cache_user_inventory(self, steamid, data):
+        self.cache['user_inventory'][steamid] = data
+        
+    def fetch_user_inventory_cache(self, steamid, appid):
+        if appid in self.cache['user_inventory']:
+            return self.cache['user_inventory'][steamid]
+        else:
+            return []
+        
     def clear_users_table(self):
         conn = sqlite3.connect(self.database)
         cursor = conn.cursor()
@@ -774,6 +776,14 @@ class DatabaseManager:
         conn.commit()
         conn.close()
 
+    def clear_SteamGroupData(self):
+        conn = sqlite3.connect(self.database)
+        cursor = conn.cursor()
+        query = "DELETE FROM SteamGroupData"
+        cursor.execute(query)
+        conn.commit()
+        conn.close()
+        
     def clear_user_games_table(self):
         conn = sqlite3.connect(self.database)
         cursor = conn.cursor()
@@ -825,6 +835,7 @@ class DatabaseManager:
     def clear_all_tables(self):
         self.clear_users_table()
         self.clear_friends_table()
+        self.clear_SteamGroupData()
         self.clear_user_games_table()
         self.clear_user_groups_table()
         self.clear_user_level_table()
