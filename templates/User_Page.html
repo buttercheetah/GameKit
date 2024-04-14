@@ -93,12 +93,7 @@ This file is just for refrence, actual website is barebones with js to fill in d
 						<div id="myDropdown" class="dropdown-content">
 						  <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
 						  <div id="gamedropdown-list">
-							<a href="#Fallout3">Fallout 3</a>
-							<a href="#TheElderScrolls">The Elder Scrolls</a>
-							<a href="#VictoriaII">Victoria II</a>
-							<a href="#example_4">example_4</a>
-							<a href="#example_5">example_5</a>
-							<a href="#example_6">example_6</a>
+							<a href="#Fallout3">Loading...</a>
 						  </div>
 						</div>
 					</div>
@@ -112,6 +107,7 @@ This file is just for refrence, actual website is barebones with js to fill in d
 							<a onclick="loaddataforgame(`{{ user['steamid'] }}`,'Total_Playtime')">Total Playtime</a>
 							<a onclick="loaddataforgame(`{{ user['steamid'] }}`,'Achievements')">Total Achievements</a>
 							<a onclick="loaddataforgame(`{{ user['steamid'] }}`,'Last_Played')">Last Played</a>
+							<a onclick="loaddataforgame(`{{ user['steamid'] }}`,'AppNews')">App News</a>
 						  </div>
 						</div>
 					</div>

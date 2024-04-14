@@ -164,7 +164,9 @@ def game_data_api():
         appid = request.args.get('appid')
         steamid = request.args.get('steamid')
         Steam.get_user_achievements_per_game(steamid, appid)
-        return Steam.db_manager.fetch_specif_game_data(appid=appid,steamid=steamid)
+        data = Steam.db_manager.fetch_specif_game_data(appid=appid,steamid=steamid)
+        data['appnews'] = Steam.get_app_news(appid=appid)
+        return data
     except Exception:
         traceback.print_exc()
         return Response(
