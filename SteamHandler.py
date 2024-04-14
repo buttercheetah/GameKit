@@ -165,9 +165,14 @@ class Steam:
         newgroups = []
         if 'groups' not in groups:
             return []
+        fingroupid = []
         for group in groups['groups']:
             if 'gid' in group: 
-                newgroups.append(self.get_group_data(group['gid']))
+                if group['gid'] in fingroupid:
+                    pass
+                else:
+                    newgroups.append(self.get_group_data(group['gid']))
+                    fingroupid.append(group['gid'])
             else:
                 newgroups.append(group)
         groups['groups'] = newgroups
