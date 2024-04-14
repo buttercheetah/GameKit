@@ -159,7 +159,7 @@ class DatabaseManager:
     def insert_user_summary(self, reponse):
         for data in reponse["response"]["players"]:
             steamid = data['steamid']
-            existing_user = self.fetch_user(steamid)
+            existing_user = self.fetch_user_summaries(steamid)
             if existing_user != []:
                 return
             else:
@@ -220,26 +220,6 @@ class DatabaseManager:
     def fetch_user_summaries(self, steamid):
         if steamid in self.cache['user_summaries']:
             return self.cache['user_summaries']
-
-        query = "SELECT * FROM Users WHERE steamid = ?"
-        conn = sqlite3.connect(self.database)
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
-        cursor.execute(query, (steamid,))
-        user = cursor.fetchone()
-        conn.close()
-
-        if user:
-            user = dict(user)
-            user = {column_name: value for column_name, value in user.items() if value != ''}
-            self.cache['user_summaries'][steamid] = user
-            return user
-        else:
-            return []
-
-
-        if steamid in self.cache['user_summaries']:
-            return self.cache['user_summaries'][steamid]
 
         query = "SELECT * FROM Users WHERE steamid = ?"
         conn = sqlite3.connect(self.database)
