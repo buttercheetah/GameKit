@@ -250,8 +250,12 @@ function loaddataforgame(steamid, operation) {
         let texttoset = "";
         try {
             if (operation == 'Last_Played') {
-                let date = new Date(data.rtime_last_played * 1000);
-                texttoset = `<p>Last played on ${date}</p>`;
+                if (data.rtime_last_played == 0) {
+                    texttoset = `<p>This game has not been played or the information is private</p>`;
+                } else {
+                    let date = new Date(data.rtime_last_played * 1000);
+                    texttoset = `<p>Last played on ${date}</p>`;
+                }
             } else if (operation == 'Achievements') {
                 for (let i = 0; i < data.Achievments.playerstats.achievements.length; i++) {
                     texttoset += `<p>${data.Achievments.playerstats.achievements[i]['displayName']} - ${data.Achievments.playerstats.achievements[i]['description']}</p>`;
