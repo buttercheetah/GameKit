@@ -17,6 +17,11 @@ production = os.environ.get('PRODUCTION', False)
 # Route for default page
 @app.route('/')
 def default():
+    return render_template("Login Page.html", web_url=web_url)
+
+# Route for default page
+@app.route('/search')
+def searchpage():
     return render_template("Search_Page_Account.html", web_url=web_url)
 
 # Route for authentication with Steam

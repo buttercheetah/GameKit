@@ -110,7 +110,7 @@ async function loadGames(usteamid) {
         for (let i = 0; i < data.games.length; i++) {
             const game = data.games[i];
             // Add a link to select the game and display its name
-            gamelist += `<a onclick="selectgame('${game.appid}','${game.name}','${usteamid}')">${game.name}</a>`;
+            gamelist += `<a onclick="selectgame('${game.appid}','${game.name.replace('\'','')}','${usteamid}')">${game.name}</a>`;
         }
         document.getElementById("gamedropdown-list").innerHTML = gamelist;
 
