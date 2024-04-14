@@ -219,7 +219,7 @@ class DatabaseManager:
 
     def fetch_user_summaries(self, steamid):
         if steamid in self.cache['user_summaries']:
-            return self.cache['user_summaries']
+            return self.cache['user_summaries'][steamid]
 
         query = "SELECT * FROM Users WHERE steamid = ?"
         conn = sqlite3.connect(self.database)
