@@ -1,51 +1,13 @@
-@media (min-width: 992px) and (max-width: 1199.98px) {
-	background: #E8E8E8;
-}
-
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-nav {
-	height: 80px;
-	width: 100%;
-	background: #989898;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 15px;
-}
-
-.searchbar {
-	justify-content: flex-end;
-}
-
-navbar {
-	justify-content: flex-end;
-}
-
-.container {
-	background: #E8E8E8;
-	display: flex;
-	width: 100%;
-	height: 130%;
-	margin: auto;
-	padding: 10px;
-}
-
-.logo {
-	max-height: 5%;
-	max-width: 5%;
-	padding-bottom: 60px;
-	justify-content: flex-start;
+    font-family: 'Trebuchet MS', Verdana, Helvetica, sans-serif;
 }
 
 .pfp {
-	max-height: 200px;
-	max-width: 200px;
+	max-height: 140px;
+	max-width: 140px;
 }
 
 main {
@@ -55,7 +17,6 @@ main {
 	text-align: left;
 	width: 100%;
 	line-height: 50px;
-	border: 3px #E8E8E8;
 	padding-top: 0%;
 }
 
@@ -76,12 +37,16 @@ main {
 	line-height: 30px;
 }
 
+.container {
+	background: linear-gradient(to bottom left, #6f6775ef,#1b1922ef);
+}
+
 .grid-container {
-	height: 500px;
+	background: linear-gradient(to bottom left, #6f6775ef,#1b1922ef);
+	height: auto;
 	display: grid;
 	grid-template-columns: auto auto;
 	gap: 30px;
-	background-color: #E8E8E8;
 	padding: 30px;
 }
 
@@ -117,6 +82,11 @@ main {
 	grid-column-end: 3;
 }
 
+.item1, .item2, .item3, .item4 li {
+	font-size: 18px;
+	color: #233c4ed5;
+}
+
 .friends-game-library {
 	width: 15%;
 	float: right;
@@ -131,6 +101,16 @@ main {
 	height: 350px;
 	line-height: 200%;
 	border: 2px #E8E8E8;
+}
+
+.friends-list, .friends-game-library h1 {
+	color: #4e697d;
+	padding-bottom: 3%;
+}
+
+.friends-list, .friends-game-library li {
+	font-size: 18px;
+	color: #233c4ed5;
 }
 
 .game-library {
@@ -178,21 +158,20 @@ main {
 .box{ 
     width: 95%; 
     height: auto; 
-    border: 2px #E8E8E8; 
-	background: #d9d9d9;
+    background-color: rgba(217,217,217,0.2);
 } 
 		
 /* Navbar container */
 .navbar {
-	overflow: hidden;
+	overflow: auto;
 	background-color: #333;
-	font-family: Arial;
+	font-family: inherit;
 }
 
 /* Links inside the navbar */
 .navbar a {
   float: left;
-  font-size: 16px;
+  font-size: 18px;
   color: white;
   text-align: center;
   padding: 14px 16px;
@@ -207,7 +186,7 @@ main {
 
 /* Dropdown button */
 .dropdown .dropbtn {
-  font-size: 16px;
+  font-size: 18px;
   border: none;
   outline: none;
   color: white;
@@ -219,7 +198,7 @@ main {
 
 /* Add a red background color to navbar links on hover */
 .navbar a:hover, .dropdown:hover .dropbtn {
-  background-color: red;
+	background-color: rgb(191, 28, 28);
 }
 
 /* Dropdown content (hidden by default) */
@@ -267,45 +246,38 @@ main {
 html {
     height: 100%;
     width: 100%;
-	overflow: scroll;
-    background-color: linear-gradient(180deg, var(--gpStoreDarkGrey) 0%, var(--gpStoreDarkerGrey) 80%);
 }
 
 h1 {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Trebuchet MS', Verdana, Helvetica, sans-serif;
     font-size: 30px;
-    color: #4e697d;
+    color:#e8e7ef;
+	padding-bottom: 1.5%;
 }
 
 h1.userstats {
 	padding-left: 25px;
-	/* text-align: center; */
 }
 
 h1.userdatasearch {
 	padding-left: 25px;
 }
 
-/* May or may not need */
-/* h1.centerText {
-	text-align: center;
-} */
-
 h2 {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Trebuchet MS', Verdana, Helvetica, sans-serif;
     font-size: 20px;
     color: #7A93A6;
 }
 
 h4 {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 15px;
+    font-family: 'Trebuchet MS', Verdana, Helvetica, sans-serif;
+    font-size: 18px;
     color: #4e697d;
 }
 
 p {
     font-size: 18px;
-    color: #7e9bb6;
+    color: #bfd3e6;
 }
 
 p.datahere {
@@ -322,7 +294,8 @@ img {
 	height: auto;
 }
 
-footer {
+footer p {
+	font-size: 20px;
     text-align: center;
     color: #4e697d;
 }
@@ -341,17 +314,17 @@ footer {
 	
 	.item2 {
 		position: relative;
-		top: 20px;
+		top: 4px;
 	}
 	
 	.item3 {
 		position: relative;
-		top: 35px;
+		top: 10px;
 	}
 	
 	.item4 {
 		position: relative;
-		top: 45px;
+		top: 15px;
 	}
 	
 	p {
@@ -359,8 +332,7 @@ footer {
 	}
 	
 	h1 {
-		font-size: 1.3em;
-		height: 25px;
+		height: 30px;
 	}
 	
 	#img2 {
@@ -386,7 +358,7 @@ footer {
 		width: 95%;
 		position: relative;
 		height: auto;
-		top: 40px;
+		top: 5px;
 		
 	}
 	
@@ -402,7 +374,7 @@ footer {
 		left: 10px;
 		height: auto;
 		position: relative;
-		top: 10px;
+		top: 3px;
 	}
 	
 	.user {
@@ -427,20 +399,40 @@ footer {
 	
 	.databox {
 		width: 100%;
+		padding-top: 10px;
 	}
 	
 	.GameQuery {
 		position: relative;
 		height: auto;
-		top: 30px;
 	}
 	
 	footer {
 		position: relative;
-		padding-top: 50px;
+		padding-top: 6px;
 	}
 	
 	.userstats {
-		line-height: 0px;
+		height: 43px;
 	}
+
+	.rightdivision {
+		float: none;
+		left: 5px;
+		position: relative;
+		display: flex;
+		padding-left: 0px;
+	}
+
+	h1.userdatasearch {
+		height: fit-content;
+		font-size: 2.4em;
+	}
+
+	h1.centerText {
+		height: fit-content;
+		font-size: 32px;
+	}
+
+	
 }

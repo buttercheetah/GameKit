@@ -1,9 +1,5 @@
 /* File name: webstyleContact.css */
 
-@media (min-width: 992px) and (max-width: 1920px) {
-	background: #E8E8E8;
-}
-
 * {
     box-sizing: border-box;
     margin: 0;
@@ -12,26 +8,22 @@
 }
 
 nav {
-	height: 140px;
+  height: 140px;
 	width: 100%;
-	background: #2b2734ef;
+	background: linear-gradient(to bottom right, #413e49ef,#110f16ef);
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	padding: 1.5%;
 }
 
-.searchbar {
-	justify-content: flex-end;
-}
-
-navbar {
+.navbar {
 	justify-content: flex-end;
 }
 
 /* Add a background color and some padding around the form */
 .container {
-	background-color: #625c66ef;
+  background: linear-gradient(to bottom left, #6f6775ef,#1b1922ef);
 	display: flex;
 	width: 100%;
 	height: 100%;
@@ -54,12 +46,8 @@ navbar {
 	padding-bottom: 7.5%;
 	max-height: 12%;
 	max-width: 12%;
+  opacity: 70%;
 	justify-content: flex-start;
-}
-
-.pfp {
-	max-height: 200px;
-	max-width: 200px;
 }
 
 .main {
@@ -69,15 +57,6 @@ navbar {
 	width: 100%;
 	line-height: 50px;
 	padding-top: 0%;
-}
-
-.info {
-	width: 85%;
-	display: grid;
-	float: center;
-	padding-left: 5%;
-	padding-top: 2%;
-	line-height: 35px;
 }
 
 a {
@@ -216,4 +195,12 @@ footer p {
     font-size: 20px;
     text-align: center;
     color: #477aa4;
+}
+
+
+@media  screen and (max-width: 400px) {
+  .logo {
+    max-width: 35%;
+    max-height: 65%;
+  }
 }
