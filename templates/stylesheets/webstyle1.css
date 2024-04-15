@@ -261,6 +261,8 @@ h1.userstats {
 
 h1.userdatasearch {
 	padding-left: 25px;
+	position:relative;
+	top: 10px;
 }
 
 h2 {
