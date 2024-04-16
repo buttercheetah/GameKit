@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<link href="stylesheets/webstyleSearch.css" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/webstyleSearch.css" rel="stylesheet" type="text/css">
     <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Account Search Page</title>
     <script src="https://kit.fontawesome.com/b353a8d556.js" crossorigin="anonymous"></script>
 
 </head>
 <body>
     <nav>
-		<div class="logo"><img src="GK_logo.png" alt="GameKit Logo"></div>
-		<!-- need to implement Navigation tool & Acc settings -->
+		<div class="logo"><a href="/"><img src="/images/GK_logo.png" alt="GameKit Logo"></a></div>
 		<div class="navbar">
-		  <a href="Wire Frame 2.html">Your Profile</a>
+		  <a href="/auth">Your Profile</a>
 			  <div class="dropdown">
-				<button class="dropbtn">Dropdown
+				<button class="dropbtn">Menu
 				  <i class="fa fa-caret-down"></i>
 				</button>
 				<div class="dropdown-content">
-					<a href="Search_Page_Account.html">Search For Accounts</a>
-					<a href="About_Us.html">About Us</a>
-					<a href="Contact_Us.html">Contact Us</a>
-					<a href="#LogOut">Log Out</a>
+					<a href="/search">Search For Accounts</a>
+					<a href="/about">About Us</a>
+					<a href="/contact">Contact Us</a>
+					<a href="/#LogOut">Log Out</a>
 				</div>
 			  </div>
 		</div>
@@ -30,17 +30,11 @@
     <div class="container">
 			<main>
 			<div class="search-box">
-			<h1>What is the player's Steam ID?</h1>
-				<div class="searchbar">	
-					<input type="text" placeholder="Example: 12546982156879325">
-				</div>
-			</div>
-			<!-- not sure if I wanna keep this or not -->
-			<div class="player-search">
-				
-			</div>
-			<div class="developer-search">
-				
+				<h1>What is the player's Steam ID?</h1>
+				<form class="search-bar" action="/api/search" method="get" >
+					<input type="text", placeholder="Profile ID/Vanity URL" name="search" size="100">
+					<button class="btn2"type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+				</form>
 			</div>
 			</main>
 		</div>

@@ -1,0 +1,31 @@
+
+a {
+	position: relative;
+	bottom: 10px;
+}
+
+@media screen and (max-width: 400px) {
+	
+	.container {
+		display: table-cell;
+	}
+	
+	.main {
+		width: 100%;
+	}
+
+    .logo {
+        max-width: 35%;
+        max-height: 65%;
+    }
+	
+	.bg-pic {
+		min-width: 50%;
+		max-width: 100%;
+		max-height: 50%;
+	}
+	
+	#img2 {
+		min-width: 40%;
+	}
+}
