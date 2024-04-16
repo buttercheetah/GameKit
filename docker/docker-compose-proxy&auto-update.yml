@@ -8,13 +8,14 @@ services:
       - STEAM_KEY=<changeme>
       - WEB_URL=<changeme>
       - TIMEZONE=UTC
+      - production=false
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.whoami.rule=Host(`gamekit.naliby.dev`)"
       - "traefik.http.routers.whoami.entrypoints=websecure"
       - "traefik.http.routers.whoami.tls.certresolver=myresolver"
     ports:
-      - 9996:5000
+      - 9996:3000
   watchtower:
     image: containrrr/watchtower
     restart: unless-stopped

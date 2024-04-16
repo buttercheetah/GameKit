@@ -10,5 +10,6 @@ services:
       - STEAM_KEY=<changeme>
       - WEB_URL=<changeme>
       - TIMEZONE=UTC
+      - production=false
     ports:
-      - 9996:5000
+      - 9996:3000
