@@ -3,6 +3,8 @@
 ## Overview
 This is a capstone project developed for CSC 289, aiming to create a dynamic web application using Python Flask that leverages the Steam API to provide users with comprehensive information about their account, friends, and gaming activity. The project incorporates database caching to enhance performance and scalability, ensuring faster loading times and seamless user experience. Moreover, the application is designed with Docker deployment in mind, facilitating easy setup and management across various platforms.
 
+## [Click Here for the Public Webpage](https://gamekit.naliby.dev/)
+
 ### Key Features:
 **Steam API Integration**: Utilizing Steam API endpoints to fetch real-time data related to games, user profiles, achievements, and more, providing users with up-to-date insights into their gaming activity.
 
