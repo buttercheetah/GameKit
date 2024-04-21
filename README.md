@@ -9,6 +9,7 @@ This is a capstone project developed for CSC 289, aiming to create a dynamic web
 **Python Flask Webserver**: Implementing Flask, a lightweight and versatile web framework, to develop a robust backend for handling user requests, routing, and rendering dynamic content.
 
 **Database Caching**: Employing a database caching mechanism to store frequently accessed data locally, reducing API calls and enhancing the application's responsiveness and performance.
+   > the schema can be found in the 'Database' Folder
 
 **Docker Deployment**: Building the application with Docker containers to facilitate seamless deployment, portability, and scalability across different environments, ensuring consistent behavior and easy management.
 
