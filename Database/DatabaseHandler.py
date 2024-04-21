@@ -86,7 +86,8 @@ class DatabaseManager:
                 rtime_last_played INTEGER,
                 has_leaderboards BOOLEAN,
                 content_descriptorids TEXT,
-                playtime_disconnected INTEGER
+                playtime_disconnected INTEGER,
+                FOREIGN KEY (steamid) REFERENCES users(steamid)
             )
         ''')
         
@@ -102,11 +103,14 @@ class DatabaseManager:
         
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS UserLevel (
-                steamid TEXT PRIMARY KEY,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                steamid TEXT,
                 player_xp INTEGER,
                 player_level INTEGER,
                 player_xp_needed_to_level_up INTEGER,
-                player_xp_needed_current_level INTEGER
+                player_xp_needed_current_level INTEGER,
+                FOREIGN KEY (steamid) REFERENCES users(steamid)
+
             )
         ''')
 
@@ -118,7 +122,8 @@ class DatabaseManager:
                 level INTEGER,
                 completion_time INTEGER,
                 xp INTEGER,
-                scarcity INTEGER
+                scarcity INTEGER,
+                FOREIGN KEY (steamid) REFERENCES users(steamid)
             )
         ''')
         
@@ -126,7 +131,7 @@ class DatabaseManager:
             CREATE TABLE IF NOT EXISTS AchievementPercentages (
                 id INTEGER PRIMARY KEY,
                 appid INTEGER,
-                name TEXT,
+                name TEXT UNIQUE,
                 percent REAL
             )
         ''')
@@ -142,7 +147,8 @@ class DatabaseManager:
                 description TEXT,
                 achieved INTEGER,
                 unlocktime INTEGER,
-                FOREIGN KEY (steamid) REFERENCES users(steamid)
+                FOREIGN KEY (steamid) REFERENCES users(steamid),
+                FOREIGN KEY (apiname) REFERENCES AchievementPercentages(name)
             )
         ''')
         
